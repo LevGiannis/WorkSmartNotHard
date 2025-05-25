@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.history;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -7,6 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.worksmartnothard.viewmodel.ProgressViewModel;
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.ui.main.ProgressAdapter;
 
 import java.util.Calendar;
 

@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.main;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,6 +17,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.worksmartnothard.model.CategoryProgress;
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.Goal;
+import com.example.worksmartnothard.data.GoalDao;
 
 import java.util.ArrayList;
 import java.util.Arrays;

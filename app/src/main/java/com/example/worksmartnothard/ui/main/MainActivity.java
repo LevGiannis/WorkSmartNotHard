@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.main;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -11,7 +11,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.worksmartnothard.ui.entry.AddEntryActivity;
+import com.example.worksmartnothard.ui.history.HistoryActivity;
+import com.example.worksmartnothard.ui.history.MonthHistoryActivity;
+import com.example.worksmartnothard.viewmodel.ProgressViewModel;
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.ui.tasks.TasksActivity;
+import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.Task;
+import com.example.worksmartnothard.ui.goal.AddGoalActivity;
 
 import java.util.Calendar;
 import java.util.List;

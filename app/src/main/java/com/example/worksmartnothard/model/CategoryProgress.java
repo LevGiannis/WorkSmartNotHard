@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.model;
 
 public class CategoryProgress {
     public String category;

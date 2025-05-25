@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.viewmodel;
 
 import android.app.Application;
 
@@ -6,6 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.worksmartnothard.model.CategoryProgress;
+import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.DailyEntry;
+import com.example.worksmartnothard.data.Goal;
 
 import java.util.ArrayList;
 import java.util.Calendar;

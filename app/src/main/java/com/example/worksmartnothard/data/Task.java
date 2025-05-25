@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.data;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.goal;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -8,6 +8,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.Goal;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -32,7 +36,7 @@ public class AddGoalActivity extends AppCompatActivity {
         List<String> categories = Arrays.asList(
                 "PortIn Mobile",
                 "Vodafone Home",
-                "Fisrt",
+                "First",
                 "Exprepay",
                 "Ec2Post-Post2Post",
                 "TV",

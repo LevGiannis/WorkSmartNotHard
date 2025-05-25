@@ -1,6 +1,5 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.tasks;
 
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +8,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.Task;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.tasks;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalDate;

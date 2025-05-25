@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.history;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -6,6 +6,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.DailyEntry;
 
 import java.util.List;
 

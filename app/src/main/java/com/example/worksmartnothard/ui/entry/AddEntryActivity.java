@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.entry;
 
 import android.os.Bundle;
 import android.text.InputType;
@@ -9,6 +9,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.DailyEntry;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -31,7 +35,7 @@ public class AddEntryActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.buttonSave);
 
         List<String> categories = Arrays.asList(
-                "PortIn Mobile", "Vodafone Home", "Fisrt", "Exprepay",
+                "PortIn Mobile", "Vodafone Home", "First", "Exprepay",
                 "Ec2Post-Post2Post", "TV", "Migrations Vdsl", "Ραντεβού"
         );
 

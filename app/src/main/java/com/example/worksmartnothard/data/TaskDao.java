@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.data;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

@@ -1,4 +1,4 @@
-package com.example.worksmartnothard;
+package com.example.worksmartnothard.ui.history;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.worksmartnothard.R;
+import com.example.worksmartnothard.data.DailyEntry;
 
 import java.util.ArrayList;
 import java.util.List;

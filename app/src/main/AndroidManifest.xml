@@ -13,7 +13,7 @@
         android:theme="@style/Theme.WorkSmartNotHard"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
 
             android:exported="true">
             <intent-filter>
@@ -23,15 +23,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AddEntryActivity" />
+        <activity android:name=".ui.entry.AddEntryActivity" />
 
-        <activity android:name=".AddGoalActivity" />
+        <activity android:name=".ui.goal.AddGoalActivity" />
 
-        <activity android:name=".HistoryActivity" />
+        <activity android:name=".ui.history.HistoryActivity" />
 
-        <activity android:name=".MonthHistoryActivity" />
+        <activity android:name=".ui.history.MonthHistoryActivity" />
 
-        <activity android:name=".TasksActivity" />
+        <activity android:name=".ui.tasks.TasksActivity" />
 
 
 
