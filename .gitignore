@@ -1,0 +1,24 @@
+# Android Studio
+.gradle/
+.idea/
+*.iml
+build/
+captures/
+local.properties
+
+# APKs
+*.apk
+*.ap_
+
+# Mac
+.DS_Store
+
+# Log
+*.log
+
+# Kotlin/Java
+*.class
+out/
+
+# Sign key (αν προσθέσεις κάποτε)
+*.jks

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">WorkSmartNotHard</string>
+
+    <string-array name="categories">
+        <item>PortIn Mobile</item>
+        <item>Vodafone Home</item>
+        <item>Fisrt</item>
+        <item>Exprepay</item>
+        <item>Ec2Post-Post2Post</item>
+        <item>TV</item>
+        <item>Migrations Vdsl</item>
+        <item>Ραντεβού</item>
+    </string-array>
+</resources>

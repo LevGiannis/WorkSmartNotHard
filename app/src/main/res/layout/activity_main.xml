@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Προβολή στόχων -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <!-- Κάτω μπάρα με FABs -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddEntry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:src="@android:drawable/ic_input_add"
+                app:tint="@android:color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:src="@android:drawable/ic_menu_edit"
+                app:tint="@android:color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabDailyHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:src="@android:drawable/ic_menu_day"
+                app:tint="@android:color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabMonthlyHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:src="@android:drawable/ic_menu_my_calendar"
+                app:tint="@android:color/white" />
+
+            <!-- 📋 Εκκρεμότητες με badge -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabTasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_agenda"
+                    android:contentDescription="Εκκρεμότητες"
+                    app:tint="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/taskBadge"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:background="@drawable/badge_background"
+                    android:visibility="gone"
+                    android:elevation="10dp" />
+            </FrameLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+</LinearLayout>

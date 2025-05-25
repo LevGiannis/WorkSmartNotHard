@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/inputName"
+            android:hint="Όνομα Πελάτη"
+            android:inputType="textPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/inputPhone"
+            android:hint="Κινητό"
+            android:inputType="phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/inputAfm"
+            android:hint="ΑΦΜ"
+            android:inputType="number"
+            android:maxLength="9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/inputDescription"
+            android:hint="Περιγραφή Εκκρεμότητας"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:minLines="2"
+            android:maxLines="4"
+            android:gravity="top|start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
+
+    </LinearLayout>
+</ScrollView>
