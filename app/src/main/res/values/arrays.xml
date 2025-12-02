@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="vodafone_home_types">
+        <item>ADSL 24</item>
+        <item>ADSL 24 TRIPLE</item>
+        <item>VDSL</item>
+        <item>VDSL TRIPLE</item>
+        <item>DOUBLE 300/500/1000</item>
+        <item>TRIPLE 300/500/1000</item>
+    </string-array>
+
+</resources>

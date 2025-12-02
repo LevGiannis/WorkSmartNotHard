@@ -2,7 +2,6 @@ package com.example.worksmartnothard.data;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import java.util.List;
@@ -10,14 +9,21 @@ import java.util.List;
 @Dao
 public interface DailyEntryDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     void insertDailyEntry(DailyEntry entry);
 
-    // Για την αρχική οθόνη (πρόοδος ανά κατηγορία στον τρέχοντα μήνα)
-    @Query("SELECT * FROM daily_entries WHERE category = :category AND date LIKE :yearMonth || '%'")
+    @Query("SELECT * FROM DailyEntry WHERE date = :date")
+    List<DailyEntry> getEntriesForDate(String date);
+
+    @Query("SELECT * FROM DailyEntry " +
+            "WHERE category = :category AND substr(date, 1, 7) = :yearMonth")
     List<DailyEntry> getEntriesForCategoryInMonth(String category, String yearMonth);
 
-    // Για προβολή όλων των καταχωρίσεων μιας ημέρας (ιστορικό)
-    @Query("SELECT * FROM daily_entries WHERE date = :specificDate")
-    List<DailyEntry> getEntriesForDate(String specificDate);
+    @Query("SELECT * FROM DailyEntry WHERE substr(date, 1, 7) = :yearMonth")
+    List<DailyEntry> getEntriesForMonth(String yearMonth);
+
+    // (προαιρετικά – αν δεν το χρειάζεσαι πουθενά, μπορείς να το σβήσεις)
+    @Query("SELECT * FROM DailyEntry " +
+            "WHERE category = 'Vodafone Home W/F' AND substr(date, 1, 7) = :yearMonth")
+    List<DailyEntry> getVodafoneHomeEntriesForMonth(String yearMonth);
 }

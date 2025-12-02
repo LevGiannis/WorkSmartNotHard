@@ -3,22 +3,90 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:background="@color/background_dark">
 
-    <!-- Προβολή στόχων -->
+    <!-- Header Card: Κατάστημα / Χρήστης / Πρόοδος / Bonus -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/headerCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="@color/card_dark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Πληροφορίες Χρήστη -->
+            <TextView
+                android:id="@+id/textUserInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📍 Κατάστημα | 👤 Χρήστης"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/text_primary" />
+
+            <!-- Διαχωριστική γραμμή -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/text_secondary" />
+
+            <!-- Σειρά: Πρόοδος (αριστερά) - Bonus (δεξιά) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- Συνολική Πρόοδος -->
+                <TextView
+                    android:id="@+id/textOverallProgress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Πρόοδος: 0%"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent_blue" />
+
+                <!-- Συνολικό Bonus -->
+                <TextView
+                    android:id="@+id/textTotalBonus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bonus: 0.00€"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Λίστα στόχων -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp" />
+        android:padding="4dp" />
 
     <!-- Κάτω μπάρα με FABs -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
-        android:padding="12dp">
+        android:paddingTop="8dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -26,39 +94,47 @@
             android:orientation="horizontal"
             android:gravity="center_horizontal">
 
+            <!-- ➕ Παραγωγή -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabAddEntry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:src="@android:drawable/ic_input_add"
+                android:contentDescription="Καταχώριση Παραγωγής"
                 app:tint="@android:color/white" />
 
+            <!-- 🎯 Στόχος -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabAddGoal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:src="@android:drawable/ic_menu_edit"
+                android:contentDescription="Προσθήκη Στόχου"
                 app:tint="@android:color/white" />
 
+            <!-- 📅 Ημερήσιο Ιστορικό -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabDailyHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:src="@android:drawable/ic_menu_day"
+                android:contentDescription="Ιστορικό Ημέρας"
                 app:tint="@android:color/white" />
 
+            <!-- 🗓 Μηνιαίο Ιστορικό -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabMonthlyHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:src="@android:drawable/ic_menu_my_calendar"
+                android:contentDescription="Ιστορικό Μήνα"
                 app:tint="@android:color/white" />
 
-            <!-- 📋 Εκκρεμότητες με badge -->
+            <!-- 📋 Εκκρεμότητες -->
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">

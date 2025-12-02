@@ -34,14 +34,18 @@ public class AddGoalActivity extends AppCompatActivity {
         buttonSave = findViewById(R.id.buttonSaveGoal);
 
         List<String> categories = Arrays.asList(
-                "PortIn Mobile",
-                "Vodafone Home",
-                "First",
+                "PortIN mobile",
                 "Exprepay",
-                "Ec2Post-Post2Post",
+                "Vodafone Home W/F",
+                "Migration FTTH",
+                "Post2post",
+                "Ec2post",
+                "First",
+                "New Connection",
+                "Ραντεβού",
+                "Συσκευές",
                 "TV",
-                "Migrations Vdsl",
-                "Ραντεβού"
+                "Migration VDSL"
         );
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
