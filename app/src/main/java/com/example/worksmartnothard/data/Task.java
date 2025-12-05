@@ -14,20 +14,27 @@ public class Task {
     @NonNull public String phone;        // Κινητό
     @NonNull public String afm;          // ΑΦΜ
     @NonNull public String description;  // Περιγραφή εκκρεμότητας
-    @NonNull public String dateCreated;  // Ημερομηνία
+    @NonNull public String dateCreated;  // Ημερομηνία δημιουργίας
+    @NonNull public String type;         // Τύπος / κατηγορία (PortIN, Home κλπ)
+    @NonNull public String dueDate;      // Προθεσμία (yyyy-MM-dd)
     public boolean done;
 
     public Task(@NonNull String name,
                 @NonNull String phone,
                 @NonNull String afm,
                 @NonNull String description,
-                boolean done,
-                @NonNull String dateCreated) {
+                @NonNull String dateCreated,
+                @NonNull String type,
+                @NonNull String dueDate,
+                boolean done) {
+
         this.name = name;
         this.phone = phone;
         this.afm = afm;
         this.description = description;
-        this.done = done;
         this.dateCreated = dateCreated;
+        this.type = type;
+        this.dueDate = dueDate;
+        this.done = done;
     }
 }

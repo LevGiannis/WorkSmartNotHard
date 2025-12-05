@@ -1,41 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="12dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <CheckBox
         android:id="@+id/checkDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ολοκληρώθηκε" />
+        android:layout_marginEnd="8dp" />
 
-    <TextView
-        android:id="@+id/textName"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textPhone"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/textName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Πελάτης: "
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textAfm"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/textPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Κινητό: " />
 
-    <TextView
-        android:id="@+id/textDescription"
-        android:textSize="14sp"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/textAfm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ΑΦΜ: " />
+
+        <TextView
+            android:id="@+id/textDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Εκκρεμότητα: " />
+
+        <!-- 🔹 ΞΕΧΩΡΙΣΤΗ ΓΡΑΜΜΗ ΓΙΑ ΠΡΟΘΕΣΜΙΑ -->
+        <TextView
+            android:id="@+id/textDueDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Προθεσμία: "
+            android:textStyle="italic" />
+    </LinearLayout>
+
 </LinearLayout>

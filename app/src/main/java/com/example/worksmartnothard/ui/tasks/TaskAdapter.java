@@ -30,14 +30,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    // 🔹 Χρησιμοποιείται από το export για να πάρουμε τις τρέχουσες εκκρεμότητες
+    // Χρησιμοποιείται από το export για να πάρουμε τις τρέχουσες εκκρεμότητες
     public List<Task> getTasks() {
         return new ArrayList<>(tasks);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkDone;
-        TextView textName, textPhone, textAfm, textDescription;
+        TextView textName, textPhone, textAfm, textDescription, textDueDate;
 
         public ViewHolder(View view) {
             super(view);
@@ -46,6 +46,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             textPhone = view.findViewById(R.id.textPhone);
             textAfm = view.findViewById(R.id.textAfm);
             textDescription = view.findViewById(R.id.textDescription);
+            textDueDate = view.findViewById(R.id.textDueDate);
         }
     }
 
@@ -61,19 +62,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull TaskAdapter.ViewHolder holder, int position) {
         Task task = tasks.get(position);
 
+        // Γεμίζουμε τα πεδία
         holder.textName.setText("Πελάτης: " + task.name);
         holder.textPhone.setText("Κινητό: " + task.phone);
         holder.textAfm.setText("ΑΦΜ: " + task.afm);
         holder.textDescription.setText("Εκκρεμότητα: " + task.description);
+        holder.textDueDate.setText("Προθεσμία: " + task.dueDate);
+
+        // Για να μην “πετάγεται” το listener όταν κάνουμε setChecked
+        holder.checkDone.setOnCheckedChangeListener(null);
         holder.checkDone.setChecked(task.done);
 
         // Διαγραφή με παρατεταμένο πάτημα
         holder.itemView.setOnLongClickListener(v -> {
             new Thread(() -> {
                 db.taskDao().deleteTask(task);
-                // Ιδανικά notify στο main thread, αλλά το αφήνουμε απλό
-                tasks.remove(position);
-                holder.itemView.post(() -> notifyItemRemoved(position));
+                int adapterPosition = holder.getBindingAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    tasks.remove(adapterPosition);
+                    holder.itemView.post(() -> notifyItemRemoved(adapterPosition));
+                }
             }).start();
             return true;
         });

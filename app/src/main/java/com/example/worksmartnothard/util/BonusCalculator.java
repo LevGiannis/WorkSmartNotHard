@@ -43,7 +43,7 @@ public class BonusCalculator {
                     break;
 
                 case "Migration FTTH":
-                    totalBonus += count * 7.0;
+                    totalBonus += count * 12.0;
                     break;
 
                 case "Post2post":

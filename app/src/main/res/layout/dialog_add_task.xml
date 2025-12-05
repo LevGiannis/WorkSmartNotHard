@@ -33,6 +33,25 @@
             android:inputType="text"
             android:layout_marginBottom="8dp" />
 
+        <!-- ΝΕΟ: Τύπος / κατηγορία εκκρεμότητας -->
+        <EditText
+            android:id="@+id/editTaskType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Τύπος (π.χ. PortIN, Home...)"
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
+
+        <!-- ΝΕΟ: Προθεσμία με επιλογή ημερομηνίας -->
+        <TextView
+            android:id="@+id/textTaskDueDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="#EEEEEE"
+            android:text="Προθεσμία (πάτησε για επιλογή)"
+            android:layout_marginBottom="12dp" />
+
         <EditText
             android:id="@+id/editTaskDescription"
             android:layout_width="match_parent"

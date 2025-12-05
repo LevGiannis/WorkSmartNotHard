@@ -7,6 +7,11 @@ import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.worksmartnothard.R;
@@ -29,6 +34,18 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_welcome);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        1001
+                );
+            }
+        }
 
         etName = findViewById(R.id.etName);
         etSurname = findViewById(R.id.etSurname);

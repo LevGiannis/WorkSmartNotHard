@@ -1,6 +1,9 @@
 package com.example.worksmartnothard.ui.tasks;
 
 import android.app.AlertDialog;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -14,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.TextView;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.text.ParseException;
+import java.util.Calendar;
 
 public class TasksActivity extends AppCompatActivity {
 
@@ -62,6 +69,9 @@ public class TasksActivity extends AppCompatActivity {
 
         buttonAddTask.setOnClickListener(v -> showAddTaskDialog());
         buttonExportTasks.setOnClickListener(v -> exportTasksToCsv());
+
+
+
     }
 
     private void loadTasksFromDb() {
@@ -79,7 +89,35 @@ public class TasksActivity extends AppCompatActivity {
         EditText editTaskName = dialogView.findViewById(R.id.editTaskName);
         EditText editTaskPhone = dialogView.findViewById(R.id.editTaskPhone);
         EditText editTaskAfm = dialogView.findViewById(R.id.editTaskAfm);
+        EditText editTaskType = dialogView.findViewById(R.id.editTaskType);
         EditText editTaskDescription = dialogView.findViewById(R.id.editTaskDescription);
+        TextView textTaskDueDate = dialogView.findViewById(R.id.textTaskDueDate);
+
+        // default: προθεσμία = σήμερα
+        Calendar cal = Calendar.getInstance();
+        String[] dueDateHolder = new String[1];
+        dueDateHolder[0] = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                .format(cal.getTime());
+        textTaskDueDate.setText("Προθεσμία: " + dueDateHolder[0]);
+
+        textTaskDueDate.setOnClickListener(v -> {
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+
+            new DatePickerDialog(
+                    this,
+                    (view, y, m, d) -> {
+                        cal.set(Calendar.YEAR, y);
+                        cal.set(Calendar.MONTH, m);
+                        cal.set(Calendar.DAY_OF_MONTH, d);
+                        String selected = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
+                        dueDateHolder[0] = selected;
+                        textTaskDueDate.setText("Προθεσμία: " + selected);
+                    },
+                    year, month, day
+            ).show();
+        });
 
         new AlertDialog.Builder(this)
                 .setTitle("Νέα Εκκρεμότητα")
@@ -88,11 +126,17 @@ public class TasksActivity extends AppCompatActivity {
                     String name = editTaskName.getText().toString().trim();
                     String phone = editTaskPhone.getText().toString().trim();
                     String afm = editTaskAfm.getText().toString().trim();
+                    String type = editTaskType.getText().toString().trim();
                     String description = editTaskDescription.getText().toString().trim();
+                    String dueDate = dueDateHolder[0];
 
                     if (TextUtils.isEmpty(name) && TextUtils.isEmpty(description)) {
                         Toast.makeText(this, "Συμπλήρωσε τουλάχιστον όνομα ή περιγραφή", Toast.LENGTH_SHORT).show();
                         return;
+                    }
+
+                    if (TextUtils.isEmpty(type)) {
+                        type = "Γενικό"; // default αν δεν γράψεις τίποτα
                     }
 
                     String dateCreated = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -103,18 +147,151 @@ public class TasksActivity extends AppCompatActivity {
                             phone,
                             afm,
                             description,
-                            false,       // done
-                            dateCreated  // dateCreated
+                            dateCreated,
+                            type,
+                            dueDate,
+                            false
                     );
 
+                    // Εισαγωγή στη βάση
                     new Thread(() -> {
                         db.taskDao().insertTask(newTask);
                         List<Task> updated = db.taskDao().getAllTasks();
                         runOnUiThread(() -> taskAdapter.setTasks(updated));
                     }).start();
+
+                    // Προγραμματισμός ειδοποίησης για την προθεσμία
+                    scheduleTaskNotification(name, description, dueDate);
+
                 })
                 .setNegativeButton("Άκυρο", null)
                 .show();
+    }
+
+
+    private void sendTestNotificationNow() {
+        Intent intent = new Intent(this, TaskReminderReceiver.class);
+        intent.putExtra("task_name", "TEST Task");
+        intent.putExtra("task_description", "Αν βλέπεις αυτή την ειδοποίηση, όλα δουλεύουν!");
+
+        // Στέλνουμε το broadcast αμέσως, ΧΩΡΙΣ AlarmManager
+        sendBroadcast(intent);
+    }
+
+    private void scheduleTaskNotification(String name, String description, String dueDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar now = Calendar.getInstance();
+        long nowMillis = now.getTimeInMillis();
+
+        Date date;
+        try {
+            date = sdf.parse(dueDate);
+            if (date == null) return;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // 1️⃣ Υπενθύμιση στις 10:00
+        Calendar calMorning = Calendar.getInstance();
+        calMorning.setTime(date);
+        calMorning.set(Calendar.HOUR_OF_DAY, 10);
+        calMorning.set(Calendar.MINUTE, 0);
+        calMorning.set(Calendar.SECOND, 0);
+        long triggerMorning = calMorning.getTimeInMillis();
+
+        // 2️⃣ Υπενθύμιση στις 17:00
+        Calendar calAfternoon = Calendar.getInstance();
+        calAfternoon.setTime(date);
+        calAfternoon.set(Calendar.HOUR_OF_DAY, 17);
+        calAfternoon.set(Calendar.MINUTE, 30);
+        calAfternoon.set(Calendar.SECOND, 0);
+        long triggerAfternoon = calAfternoon.getTimeInMillis();
+
+        List<String> timesScheduled = new ArrayList<>();
+
+        // Αν η ώρα είναι στο μέλλον → ορίζουμε alarm
+        if (triggerMorning > nowMillis) {
+            scheduleSingleAlarm(triggerMorning, name, description);
+            timesScheduled.add(
+                    new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                            .format(calMorning.getTime())
+            );
+        }
+
+        if (triggerAfternoon > nowMillis) {
+            scheduleSingleAlarm(triggerAfternoon, name, description);
+            timesScheduled.add(
+                    new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                            .format(calAfternoon.getTime())
+            );
+        }
+
+        // Αν δεν προγραμματίστηκε καμία (ημερομηνία & ώρες έχουν περάσει) → σε 10 δευτερόλεπτα
+        if (timesScheduled.isEmpty()) {
+            Calendar calFallback = Calendar.getInstance();
+            calFallback.add(Calendar.SECOND, 10);
+            long triggerFallback = calFallback.getTimeInMillis();
+
+            scheduleSingleAlarm(triggerFallback, name, description);
+
+            String formatted = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                    .format(calFallback.getTime());
+            Toast.makeText(
+                    this,
+                    "Η προθεσμία έχει περάσει.\nΈβαλα υπενθύμιση σε 10 δευτερόλεπτα:\n" + formatted,
+                    Toast.LENGTH_LONG
+            ).show();
+        } else {
+            String msg = "Η υπενθύμιση ορίστηκε για:\n";
+            for (String t : timesScheduled) {
+                msg += "• " + t + "\n";
+            }
+            Toast.makeText(this, msg.trim(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    private void scheduleSingleAlarm(long triggerAt, String name, String description) {
+        Intent intent = new Intent(this, TaskReminderReceiver.class);
+        intent.putExtra("task_name", name);
+        intent.putExtra("task_description", description);
+
+        int requestCode = (int) System.currentTimeMillis();
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                requestCode,
+                intent,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                        : PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        if (alarmManager == null) return;
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Android 12+ → inexact alarm (δεν χρειάζεται SCHEDULE_EXACT_ALARM)
+                alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerAt,
+                        pendingIntent
+                );
+            } else {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent);
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            Toast.makeText(
+                    this,
+                    "Δεν μπόρεσα να ορίσω ακριβή υπενθύμιση, αλλά η εκκρεμότητα αποθηκεύτηκε.",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
     }
 
     // 🔹 Export εκκρεμοτήτων (done == false) -> σε CSV στο Downloads + email, ΟΠΩΣ στον μήνα
@@ -146,14 +323,16 @@ public class TasksActivity extends AppCompatActivity {
                     .append(today)
                     .append("\n\n");
 
-            sb.append("Πελάτης;Κινητό;ΑΦΜ;Εκκρεμότητα;Ημερομηνία Δημιουργίας\n");
+            sb.append("Πελάτης;Κινητό;ΑΦΜ;Τύπος;Εκκρεμότητα;Ημερομηνία Δημιουργίας;Προθεσμία\n");
 
             for (Task t : pendingTasks) {
                 sb.append(safe(t.name)).append(";")
                         .append(safe(t.phone)).append(";")
                         .append(safe(t.afm)).append(";")
+                        .append(safe(t.type)).append(";")
                         .append(safe(t.description).replace("\n", " ")).append(";")
-                        .append(safe(t.dateCreated))
+                        .append(safe(t.dateCreated)).append(";")
+                        .append(safe(t.dueDate))
                         .append("\n");
             }
 
