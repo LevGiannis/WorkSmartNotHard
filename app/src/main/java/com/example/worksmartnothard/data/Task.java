@@ -17,8 +17,12 @@ public class Task {
     @NonNull public String dateCreated;  // Ημερομηνία
     public boolean done;
 
-    public Task(@NonNull String name, @NonNull String phone, @NonNull String afm,
-                @NonNull String description, boolean done, @NonNull String dateCreated) {
+    public Task(@NonNull String name,
+                @NonNull String phone,
+                @NonNull String afm,
+                @NonNull String description,
+                boolean done,
+                @NonNull String dateCreated) {
         this.name = name;
         this.phone = phone;
         this.afm = afm;

@@ -26,8 +26,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
     public void setTasks(List<Task> newTasks) {
-        this.tasks = newTasks;
+        this.tasks = newTasks != null ? newTasks : new ArrayList<>();
         notifyDataSetChanged();
+    }
+
+    // 🔹 Χρησιμοποιείται από το export για να πάρουμε τις τρέχουσες εκκρεμότητες
+    public List<Task> getTasks() {
+        return new ArrayList<>(tasks);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -66,8 +71,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.itemView.setOnLongClickListener(v -> {
             new Thread(() -> {
                 db.taskDao().deleteTask(task);
+                // Ιδανικά notify στο main thread, αλλά το αφήνουμε απλό
                 tasks.remove(position);
-                ((RecyclerView.Adapter) TaskAdapter.this).notifyItemRemoved(position);
+                holder.itemView.post(() -> notifyItemRemoved(position));
             }).start();
             return true;
         });

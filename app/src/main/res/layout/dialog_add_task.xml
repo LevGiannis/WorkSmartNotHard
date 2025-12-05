@@ -1,49 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="16dp">
 
     <LinearLayout
-        android:padding="16dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <EditText
-            android:id="@+id/inputName"
-            android:hint="Όνομα Πελάτη"
-            android:inputType="textPersonName"
+            android:id="@+id/editTaskName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="Όνομα πελάτη"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="8dp" />
 
         <EditText
-            android:id="@+id/inputPhone"
+            android:id="@+id/editTaskPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="Κινητό"
             android:inputType="phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
+            android:layout_marginBottom="8dp" />
 
         <EditText
-            android:id="@+id/inputAfm"
+            android:id="@+id/editTaskAfm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="ΑΦΜ"
-            android:inputType="number"
-            android:maxLength="9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
+            android:inputType="text"
+            android:layout_marginBottom="8dp" />
 
         <EditText
-            android:id="@+id/inputDescription"
-            android:hint="Περιγραφή Εκκρεμότητας"
-            android:inputType="textMultiLine"
-            android:lines="3"
-            android:minLines="2"
-            android:maxLines="4"
-            android:gravity="top|start"
+            android:id="@+id/editTaskDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
-
+            android:hint="Περιγραφή εκκρεμότητας"
+            android:inputType="textMultiLine"
+            android:minLines="3" />
     </LinearLayout>
+
 </ScrollView>

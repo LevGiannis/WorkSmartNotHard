@@ -3,6 +3,7 @@ package com.example.worksmartnothard.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -10,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.worksmartnothard.R;
 import com.example.worksmartnothard.data.AppPreferences;
-import com.example.worksmartnothard.ui.main.MainActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -21,7 +21,7 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // ✅ Αν ο χρήστης έχει ήδη ολοκληρώσει την εγγραφή, πήγαινε κατευθείαν στη MainActivity
+        // Αν ολοκληρώθηκε το onboarding, πήγαινε Main
         if (AppPreferences.isOnboardingCompleted(this)) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -38,24 +38,56 @@ public class WelcomeActivity extends AppCompatActivity {
         btnContinue = findViewById(R.id.btnContinue);
 
         btnContinue.setOnClickListener(v -> {
+            String name = etName.getText().toString().trim();
+            String surname = etSurname.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
             String nickname = etNickname.getText().toString().trim();
             String storeCode = etStoreCode.getText().toString().trim();
+
+            if (TextUtils.isEmpty(name)) {
+                etName.setError("Το όνομα είναι υποχρεωτικό");
+                return;
+            }
+
+            if (TextUtils.isEmpty(surname)) {
+                etSurname.setError("Το επώνυμο είναι υποχρεωτικό");
+                return;
+            }
+
+            if (TextUtils.isEmpty(email)) {
+                etEmail.setError("Το email είναι υποχρεωτικό");
+                return;
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                etEmail.setError("Μη έγκυρο email");
+                return;
+            }
 
             if (TextUtils.isEmpty(nickname)) {
                 etNickname.setError("Το ψευδώνυμο είναι υποχρεωτικό");
                 return;
             }
+
             if (TextUtils.isEmpty(storeCode)) {
                 etStoreCode.setError("Ο κωδικός καταστήματος είναι υποχρεωτικός");
                 return;
             }
 
-            // Αποθήκευση στοιχείων
-            AppPreferences.saveUserInfo(this, nickname, storeCode);
-            // Δηλώνουμε ότι ολοκληρώθηκε το onboarding
+            // Αποθήκευση onboarding στοιχείων
+            AppPreferences.setFirstName(this, name);
+            AppPreferences.setLastName(this, surname);
+            AppPreferences.setEmail(this, email);
+            AppPreferences.setNickname(this, nickname);
+            AppPreferences.setStoreCode(this, storeCode);
+
+            // Default report email = προσωπικό email (αν δεν υπάρχει ήδη)
+            if (TextUtils.isEmpty(AppPreferences.getReportEmail(this))) {
+                AppPreferences.setReportEmail(this, email);
+            }
+
             AppPreferences.setOnboardingCompleted(this, true);
 
-            // Μετάβαση στη MainActivity
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });

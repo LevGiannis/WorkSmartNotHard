@@ -42,9 +42,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         // Αν είναι Vodafone Home W/F και έχουμε υποτύπο, τον εμφανίζουμε
         String title = entry.category;
         if ("Vodafone Home W/F".equals(entry.category)
-                && entry.homeSubtype != null
-                && !entry.homeSubtype.trim().isEmpty()) {
-            title = entry.category + " - " + entry.homeSubtype.trim();
+                && entry.homeType != null
+                && !entry.homeType.trim().isEmpty()) {
+            title = entry.category + " - " + entry.homeType.trim();
         }
 
         holder.textCategory.setText(title);

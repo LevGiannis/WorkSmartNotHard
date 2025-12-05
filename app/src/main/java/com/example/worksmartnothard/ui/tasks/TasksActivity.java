@@ -1,81 +1,251 @@
 package com.example.worksmartnothard.ui.tasks;
 
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.worksmartnothard.R;
 import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.AppPreferences;
 import com.example.worksmartnothard.data.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.time.LocalDate;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class TasksActivity extends AppCompatActivity {
 
+    private RecyclerView recyclerTasks;
+    private TaskAdapter taskAdapter;
+    private Button buttonExportTasks;
+    private Button buttonAddTask;
     private AppDatabase db;
-    private TaskAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 👉 Χρησιμοποιεί το activity_tasks.xml που σου έδωσα
         setContentView(R.layout.activity_tasks);
 
         db = AppDatabase.getDatabase(getApplicationContext());
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerTasks);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new TaskAdapter(db);
-        recyclerView.setAdapter(adapter);
+        recyclerTasks = findViewById(R.id.recyclerTasks);
+        buttonExportTasks = findViewById(R.id.buttonExportTasks);
+        buttonAddTask = findViewById(R.id.buttonAddTask);
 
-        loadTasks();
+        taskAdapter = new TaskAdapter(db);
+        recyclerTasks.setLayoutManager(new LinearLayoutManager(this));
+        recyclerTasks.setAdapter(taskAdapter);
 
-        FloatingActionButton fabAddTask = findViewById(R.id.fabAddTask);
-        fabAddTask.setOnClickListener(v -> showAddTaskDialog());
+        loadTasksFromDb();
+
+        buttonAddTask.setOnClickListener(v -> showAddTaskDialog());
+        buttonExportTasks.setOnClickListener(v -> exportTasksToCsv());
     }
 
-    private void loadTasks() {
+    private void loadTasksFromDb() {
         new Thread(() -> {
             List<Task> tasks = db.taskDao().getAllTasks();
-            runOnUiThread(() -> adapter.setTasks(tasks));
+            runOnUiThread(() -> taskAdapter.setTasks(tasks));
         }).start();
     }
 
+    // 🔹 Dialog προσθήκης νέας εκκρεμότητας
     private void showAddTaskDialog() {
-        View formView = getLayoutInflater().inflate(R.layout.dialog_add_task, null);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_add_task, null);
 
-        EditText inputName = formView.findViewById(R.id.inputName);
-        EditText inputPhone = formView.findViewById(R.id.inputPhone);
-        EditText inputAfm = formView.findViewById(R.id.inputAfm);
-        EditText inputDescription = formView.findViewById(R.id.inputDescription);
+        EditText editTaskName = dialogView.findViewById(R.id.editTaskName);
+        EditText editTaskPhone = dialogView.findViewById(R.id.editTaskPhone);
+        EditText editTaskAfm = dialogView.findViewById(R.id.editTaskAfm);
+        EditText editTaskDescription = dialogView.findViewById(R.id.editTaskDescription);
 
         new AlertDialog.Builder(this)
                 .setTitle("Νέα Εκκρεμότητα")
-                .setView(formView)
-                .setPositiveButton("Καταχώριση", (dialog, which) -> {
-                    String name = inputName.getText().toString().trim();
-                    String phone = inputPhone.getText().toString().trim();
-                    String afm = inputAfm.getText().toString().trim();
-                    String description = inputDescription.getText().toString().trim();
+                .setView(dialogView)
+                .setPositiveButton("Αποθήκευση", (dialog, which) -> {
+                    String name = editTaskName.getText().toString().trim();
+                    String phone = editTaskPhone.getText().toString().trim();
+                    String afm = editTaskAfm.getText().toString().trim();
+                    String description = editTaskDescription.getText().toString().trim();
 
-                    if (!name.isEmpty() && !phone.isEmpty() && !afm.isEmpty() && !description.isEmpty()) {
-                        Task task = new Task(name, phone, afm, description, false, LocalDate.now().toString());
-                        new Thread(() -> {
-                            db.taskDao().insertTask(task);
-                            loadTasks();
-                        }).start();
-                    } else {
-                        Toast.makeText(this, "Συμπλήρωσε όλα τα πεδία", Toast.LENGTH_SHORT).show();
+                    if (TextUtils.isEmpty(name) && TextUtils.isEmpty(description)) {
+                        Toast.makeText(this, "Συμπλήρωσε τουλάχιστον όνομα ή περιγραφή", Toast.LENGTH_SHORT).show();
+                        return;
                     }
+
+                    String dateCreated = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                            .format(new Date());
+
+                    Task newTask = new Task(
+                            name,
+                            phone,
+                            afm,
+                            description,
+                            false,       // done
+                            dateCreated  // dateCreated
+                    );
+
+                    new Thread(() -> {
+                        db.taskDao().insertTask(newTask);
+                        List<Task> updated = db.taskDao().getAllTasks();
+                        runOnUiThread(() -> taskAdapter.setTasks(updated));
+                    }).start();
                 })
                 .setNegativeButton("Άκυρο", null)
                 .show();
+    }
+
+    // 🔹 Export εκκρεμοτήτων (done == false) -> σε CSV στο Downloads + email, ΟΠΩΣ στον μήνα
+    private void exportTasksToCsv() {
+        List<Task> allTasks = taskAdapter.getTasks();
+        if (allTasks == null) {
+            allTasks = new ArrayList<>();
+        }
+
+        // ΜΟΝΟ εκκρεμότητες (done == false)
+        List<Task> pendingTasks = new ArrayList<>();
+        for (Task t : allTasks) {
+            if (t != null && !t.done) {
+                pendingTasks.add(t);
+            }
+        }
+
+        if (pendingTasks.isEmpty()) {
+            Toast.makeText(this, "Δεν υπάρχουν εκκρεμότητες για export", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new Thread(() -> {
+            String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    .format(new Date());
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("ΕΚΚΡΕΜΟΤΗΤΕΣ;Ημερομηνία εξαγωγής;")
+                    .append(today)
+                    .append("\n\n");
+
+            sb.append("Πελάτης;Κινητό;ΑΦΜ;Εκκρεμότητα;Ημερομηνία Δημιουργίας\n");
+
+            for (Task t : pendingTasks) {
+                sb.append(safe(t.name)).append(";")
+                        .append(safe(t.phone)).append(";")
+                        .append(safe(t.afm)).append(";")
+                        .append(safe(t.description).replace("\n", " ")).append(";")
+                        .append(safe(t.dateCreated))
+                        .append("\n");
+            }
+
+            saveTasksCsvToDownloads(sb.toString());
+
+        }).start();
+    }
+
+    // 🔹 ΙΔΙΑ λογική με saveCsvToDownloads του MonthHistoryActivity
+    private void saveTasksCsvToDownloads(String csvContent) {
+
+        ContentResolver resolver = getContentResolver();
+        Uri collection;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+        } else {
+            collection = MediaStore.Files.getContentUri("external");
+        }
+
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmm", Locale.getDefault())
+                .format(new Date());
+        String fileName = "tasks_" + timestamp + ".csv";
+
+        ContentValues values = new ContentValues();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+            values.put(MediaStore.Downloads.MIME_TYPE, "text/csv");
+            values.put(MediaStore.Downloads.IS_PENDING, 1);
+        } else {
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, "text/csv");
+        }
+
+        Uri item = resolver.insert(collection, values);
+        if (item == null) {
+            runOnUiThread(() ->
+                    Toast.makeText(this, "Σφάλμα δημιουργίας αρχείου στις Λήψεις", Toast.LENGTH_SHORT).show()
+            );
+            return;
+        }
+
+        try (OutputStream out = resolver.openOutputStream(item)) {
+            if (out == null) {
+                runOnUiThread(() ->
+                        Toast.makeText(this, "Σφάλμα ανοίγματος αρχείου", Toast.LENGTH_SHORT).show()
+                );
+                return;
+            }
+
+            // BOM για ελληνικά σε Excel
+            out.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
+            out.write(csvContent.getBytes(StandardCharsets.UTF_8));
+            out.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            runOnUiThread(() ->
+                    Toast.makeText(this, "Σφάλμα κατά το export", Toast.LENGTH_SHORT).show()
+            );
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ContentValues done = new ContentValues();
+            done.put(MediaStore.Downloads.IS_PENDING, 0);
+            resolver.update(item, done, null, null);
+        }
+
+        runOnUiThread(() -> {
+            Toast.makeText(this, "Το αρχείο αποθηκεύτηκε στις Λήψεις:\n" + fileName, Toast.LENGTH_LONG).show();
+            sendEmailWithAttachment(item, fileName);
+        });
+    }
+
+    // 🔹 Ίδιο pattern με MonthHistoryActivity αλλά για Εκκρεμότητες
+    private void sendEmailWithAttachment(Uri fileUri, String filename) {
+
+        String savedEmail = AppPreferences.getEffectiveReportEmail(this);
+
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("text/csv");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{savedEmail});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Export Εκκρεμοτήτων");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Σας επισυνάπτω το αρχείο με τις εκκρεμότητες.");
+        emailIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        startActivity(Intent.createChooser(emailIntent, "Αποστολή Εκκρεμοτήτων"));
+    }
+
+    private String safe(String text) {
+        return text == null ? "" : text.trim();
     }
 }

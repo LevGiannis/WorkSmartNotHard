@@ -1,180 +1,141 @@
 package com.example.worksmartnothard.util;
 
 import com.example.worksmartnothard.data.DailyEntry;
-import com.example.worksmartnothard.model.CategoryProgress;
 
 import java.util.List;
 
 public class BonusCalculator {
 
-    private static final String CATEGORY_VODAFONE_HOME = "Vodafone Home W/F";
-
     /**
-     * Υπολογισμός bonus για ΜΙΑ εγγραφή DailyEntry
-     * με βάση category + homeSubtype + count.
+     * Υπολογισμός συνολικού bonus για έναν μήνα,
+     * με βάση όλες τις ημερήσιες καταχωρήσεις (DailyEntry).
      */
-    public static double computeBonusForEntry(DailyEntry entry) {
-        if (entry == null) return 0.0;
-
-        String category = entry.category != null ? entry.category.trim() : "";
-        String subtype  = entry.homeSubtype != null ? entry.homeSubtype.trim() : "";
-        double count    = entry.count;
-
-        if (count <= 0) return 0.0;
-
-        // 🔹 Ραντεβού: ειδική μεταχείριση, γίνεται πιο κάτω συνολικά
-        if ("Ραντεβού".equals(category)) {
-            return 0.0;
-        }
-
-        // 🔹 Vodafone Home W/F – bonus από υποκατηγορία
-        if (CATEGORY_VODAFONE_HOME.equals(category)) {
-            return computeVodafoneHomeBonus(subtype, count);
-        }
-
-        // 🔹 Όλες οι υπόλοιπες κατηγορίες
-        return computeBonusForCategoryName(category, count);
-    }
-
-    /**
-     * Bonus για «απλές» κατηγορίες (όχι Vodafone Home W/F).
-     */
-    private static double computeBonusForCategoryName(String name, double count) {
-        switch (name) {
-            case "PortIN mobile":
-                return count * 7.0;
-
-            case "Exprepay":
-                return count * 3.0;
-
-            case "Migration FTTH":
-                return count * 12.0;
-
-            case "Post2post":
-                return count * 3.0;
-
-            case "Ec2post":
-                return count * 3.0;
-
-            case "First":
-                return count * 3.0;
-
-            case "New Connection":
-                return count * 7.0;
-
-            case "TV":
-                return count * 7.0;
-
-            case "Migration VDSL":
-                return count * 4.0;
-
-            case "Συσκευές":
-                return 0.0;
-
-            default:
-                return 0.0;
-        }
-    }
-
-    /**
-     * Bonus για ΥΠΟΚΑΤΗΓΟΡΙΕΣ Vodafone Home W/F.
-     */
-    private static double computeVodafoneHomeBonus(String subtype, double count) {
-        if (subtype == null || count <= 0) return 0.0;
-
-        switch (subtype) {
-            case "ADSL 24":
-                return count * 5.0;
-
-            case "ADSL 24 TRIPLE":
-                return count * 20.0;
-
-            case "VDSL":
-                return count * 12.0;
-
-            case "VDSL TRIPLE":
-                return count * 30.0;
-
-            case "DOUBLE 300/500/1000":
-                return count * 20.0;
-
-            case "TRIPLE 300/500/1000":
-                return count * 35.0;
-
-            case "FWA":
-                return count * 10.0;
-
-            default:
-                return 0.0;
-        }
-    }
-
-    /**
-     * Υπολογισμός συνολικού bonus για έναν μήνα
-     * από λίστα DailyEntry.
-     *
-     * – Όλες οι κατηγορίες: computeBonusForEntry(...)
-     * – Ραντεβού: στο τέλος με 0.10 / 0.15 / 0.20
-     */
-    public static double computeBonusForMonth(List<DailyEntry> entries) {
+    public static double calculateMonthlyBonus(List<DailyEntry> entries) {
         if (entries == null || entries.isEmpty()) return 0.0;
 
-        double total = 0.0;
-        double totalAppointmentsAmount = 0.0;
+        double totalBonus = 0.0;
+
+        // Σύνολο ποσού ραντεβού (σε €) για τον μήνα
+        double appointmentsAmount = 0.0;
+
+        // Vodafone Home W/F ανά υποτύπο
+        double adsl24 = 0.0;
+        double adsl24Triple = 0.0;
+        double vdsl = 0.0;
+        double vdslTriple = 0.0;
+        double double300 = 0.0;
+        double triple300 = 0.0;
+        double fwa = 0.0;
 
         for (DailyEntry e : entries) {
-            if (e == null) continue;
+            if (e == null || e.category == null) continue;
 
-            String category = e.category != null ? e.category.trim() : "";
+            String category = e.category.trim();
+            double count = e.count;
 
-            if ("Ραντεβού".equals(category)) {
-                // count = ποσό €
-                totalAppointmentsAmount += e.count;
-            } else {
-                total += computeBonusForEntry(e);
+            switch (category) {
+                case "PortIN mobile":
+                    totalBonus += count * 7.0;
+                    break;
+
+                case "Exprepay":
+                    totalBonus += count * 3.0;
+                    break;
+
+                case "Migration FTTH":
+                    totalBonus += count * 7.0;
+                    break;
+
+                case "Post2post":
+                    totalBonus += count * 3.0;
+                    break;
+
+                case "Ec2post":
+                    totalBonus += count * 3.0;
+                    break;
+
+                case "First":
+                    totalBonus += count * 3.0;
+                    break;
+
+                case "New Connection":
+                    totalBonus += count * 7.0;
+                    break;
+
+                case "TV":
+                    totalBonus += count * 7.0;
+                    break;
+
+                case "Migration VDSL":
+                    totalBonus += count * 4.0;
+                    break;
+
+                case "Συσκευές":
+                    // Δεν έχει bonus
+                    break;
+
+                case "Ραντεβού":
+                    // Ποσό σε €, κλίμακα υπολογίζεται στο τέλος
+                    appointmentsAmount += count;
+                    break;
+
+                case "Vodafone Home W/F":
+                    // 👇 ΕΔΩ ήταν το πρόβλημα αν έλειπε το "e."
+                    String subtype = (e.homeType == null) ? "" : e.homeType.trim();
+                    switch (subtype) {
+                        case "ADSL 24":
+                            adsl24 += count;
+                            break;
+                        case "ADSL 24 TRIPLE":
+                            adsl24Triple += count;
+                            break;
+                        case "VDSL":
+                            vdsl += count;
+                            break;
+                        case "VDSL TRIPLE":
+                            vdslTriple += count;
+                            break;
+                        case "DOUBLE 300/500/1000":
+                            double300 += count;
+                            break;
+                        case "TRIPLE 300/500/1000":
+                            triple300 += count;
+                            break;
+                        case "FWA":
+                            fwa += count;
+                            break;
+                        default:
+                            // Άγνωστος υποτύπος -> 0 bonus
+                            break;
+                    }
+                    break;
+
+                default:
+                    // Άγνωστη κατηγορία -> 0 bonus
+                    break;
             }
         }
 
-        if (totalAppointmentsAmount > 0) {
-            total += computeAppointmentsBonus(totalAppointmentsAmount);
+        // 🔹 Vodafone Home W/F bonus ανά υποτύπο
+        totalBonus += adsl24 * 5.0;
+        totalBonus += adsl24Triple * 20.0;
+        totalBonus += vdsl * 12.0;
+        totalBonus += vdslTriple * 30.0;
+        totalBonus += double300 * 20.0;
+        totalBonus += triple300 * 35.0;
+        totalBonus += fwa * 10.0;
+
+        // 🔹 Bonus από Ραντεβού με κλίμακες
+        if (appointmentsAmount > 0) {
+            if (appointmentsAmount > 1200) {
+                totalBonus += appointmentsAmount * 0.20;
+            } else if (appointmentsAmount >= 900) {
+                totalBonus += appointmentsAmount * 0.15;
+            } else { // 0–900
+                totalBonus += appointmentsAmount * 0.10;
+            }
         }
 
-        return total;
-    }
-
-    /**
-     * Bonus για ΡΑΝΤΕΒΟΥ:
-     *  - 0   έως < 900€   → 10%
-     *  - 900 έως < 1200€  → 15%
-     *  - ≥ 1200€          → 20%
-     */
-    public static double computeAppointmentsBonus(double totalAmount) {
-        if (totalAmount <= 0) return 0.0;
-
-        if (totalAmount < 900.0) {
-            return totalAmount * 0.10;
-        } else if (totalAmount < 1200.0) {
-            return totalAmount * 0.15;
-        } else {
-            return totalAmount * 0.20;
-        }
-    }
-
-    /**
-     * Υπολογισμός bonus από CategoryProgress
-     * (χρησιμοποιείται ΜΟΝΟ για απλές κατηγορίες).
-     */
-    public static double calculateBonusForCategory(CategoryProgress p) {
-        if (p == null || p.category == null) return 0.0;
-
-        String category = p.category.trim();
-
-        // Για Vodafone Home W/F δεν μπορούμε από μόνο το achieved,
-        // οπότε χρησιμοποιούμε computeBonusForMonth(...) από DailyEntry
-        if (CATEGORY_VODAFONE_HOME.equals(category)) {
-            return 0.0;
-        }
-
-        return computeBonusForCategoryName(category, p.achieved);
+        return totalBonus;
     }
 }

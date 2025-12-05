@@ -11,11 +11,11 @@ import java.util.List;
 @Dao
 public interface TaskDao {
 
+    @Query("SELECT * FROM tasks ORDER BY dateCreated DESC")
+    List<Task> getAllTasks();
+
     @Insert
     void insertTask(Task task);
-
-    @Query("SELECT * FROM tasks ORDER BY id DESC")
-    List<Task> getAllTasks();
 
     @Update
     void updateTask(Task task);

@@ -14,15 +14,26 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         app:cardUseCompatPadding="true"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="8dp"
         app:cardBackgroundColor="@color/card_dark">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="18dp">
+
+            <!-- Settings Button (top right) -->
+            <ImageView
+                android:id="@+id/buttonSettings"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="end"
+                android:padding="4dp"
+                android:src="@android:drawable/ic_menu_preferences"
+                android:tint="@android:color/white"
+                android:contentDescription="Ρυθμίσεις" />
 
             <!-- Πληροφορίες Χρήστη -->
             <TextView
@@ -31,14 +42,14 @@
                 android:layout_height="wrap_content"
                 android:text="📍 Κατάστημα | 👤 Χρήστης"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textColor="@color/text_primary" />
 
             <!-- Διαχωριστική γραμμή -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/text_secondary" />
 
             <!-- Σειρά: Πρόοδος (αριστερά) - Bonus (δεξιά) -->
@@ -46,16 +57,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
 
                 <!-- Συνολική Πρόοδος -->
                 <TextView
                     android:id="@+id/textOverallProgress"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Πρόοδος: 0%"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="Success: 0%"
+                    android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="@color/accent_blue" />
 
@@ -65,13 +77,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bonus: 0.00€"
-                    android:textSize="20sp"
+                    android:textSize="22sp"
                     android:textStyle="bold"
+                    android:paddingStart="12dp"
                     android:textColor="@android:color/white" />
             </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 
     <!-- Λίστα στόχων -->
     <androidx.recyclerview.widget.RecyclerView
@@ -99,7 +113,7 @@
                 android:id="@+id/fabAddEntry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="10dp"
                 android:src="@android:drawable/ic_input_add"
                 android:contentDescription="Καταχώριση Παραγωγής"
                 app:tint="@android:color/white" />
@@ -109,7 +123,7 @@
                 android:id="@+id/fabAddGoal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="10dp"
                 android:src="@android:drawable/ic_menu_edit"
                 android:contentDescription="Προσθήκη Στόχου"
                 app:tint="@android:color/white" />
@@ -119,7 +133,7 @@
                 android:id="@+id/fabDailyHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="10dp"
                 android:src="@android:drawable/ic_menu_day"
                 android:contentDescription="Ιστορικό Ημέρας"
                 app:tint="@android:color/white" />
@@ -129,7 +143,7 @@
                 android:id="@+id/fabMonthlyHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="10dp"
                 android:src="@android:drawable/ic_menu_my_calendar"
                 android:contentDescription="Ιστορικό Μήνα"
                 app:tint="@android:color/white" />
@@ -162,6 +176,8 @@
                     android:visibility="gone"
                     android:elevation="10dp" />
             </FrameLayout>
+
         </LinearLayout>
     </HorizontalScrollView>
+
 </LinearLayout>

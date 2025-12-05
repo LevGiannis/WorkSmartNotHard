@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 @Database(
         entities = {DailyEntry.class, Goal.class, Task.class},
-        version = 4,              // 👈 ΑΠΟ 2 → 3
+        version = 5,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {

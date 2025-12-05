@@ -22,10 +22,12 @@ import com.example.worksmartnothard.ui.entry.AddEntryActivity;
 import com.example.worksmartnothard.ui.goal.AddGoalActivity;
 import com.example.worksmartnothard.ui.history.HistoryActivity;
 import com.example.worksmartnothard.ui.history.MonthHistoryActivity;
+import com.example.worksmartnothard.ui.settings.SettingsActivity;
 import com.example.worksmartnothard.ui.tasks.TasksActivity;
 import com.example.worksmartnothard.util.BonusCalculator;
 import com.example.worksmartnothard.viewmodel.ProgressViewModel;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -54,26 +56,31 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // 🔧 Ανάκτηση και εμφάνιση ψευδωνύμου/καταστήματος
+        // 🔧 Ανάκτηση ψευδωνύμου/καταστήματος
         userInfoText = findViewById(R.id.textUserInfo);
         String nickname = AppPreferences.getNickname(this);
         String storeCode = AppPreferences.getStoreCode(this);
         userInfoText.setText("📍 " + storeCode + " | 👤 " + nickname);
 
-        // 🔧 Προβολή συνολικής προόδου
+        // 🔧 Συνολική πρόοδος και bonus
         overallProgressText = findViewById(R.id.textOverallProgress);
-
-        // 🔧 Προβολή συνολικού bonus
         totalBonusText = findViewById(R.id.textTotalBonus);
+
+        // ▶️ SETTINGS BUTTON
+        findViewById(R.id.buttonSettings).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
 
         // 🔧 Προβολή στόχων
         viewModel = new ViewModelProvider(this).get(ProgressViewModel.class);
         viewModel.getProgressList().observe(this, progressList -> {
             adapter.setData(progressList);
             updateOverallProgress(progressList);
+            updateTotalBonusForCurrentMonth();
         });
 
-        // ✅ FABs
+        // FABs
         findViewById(R.id.fabAddEntry).setOnClickListener(v ->
                 startActivity(new Intent(this, AddEntryActivity.class)));
 
@@ -145,20 +152,18 @@ public class MainActivity extends AppCompatActivity {
         picker.show();
     }
 
-    // 🔹 Μέσος όρος ποσοστών + συνολικό bonus (τρέχων μήνας)
+    // 🔹 Υπολογισμός ποσοστιαίας συνολικής επιτυχίας
     private void updateOverallProgress(List<CategoryProgress> progressList) {
         if (progressList == null || progressList.isEmpty()) {
             overallProgressText.setText("Success: 0%");
             overallProgressText.setTextColor(
                     ContextCompat.getColor(this, R.color.text_primary));
-
             if (totalBonusText != null) {
                 totalBonusText.setText("Bonus: 0.00€");
             }
             return;
         }
 
-        // Υπολογισμός μέσου όρου ποσοστών
         double percentageSum = 0.0;
         int count = 0;
 
@@ -176,32 +181,30 @@ public class MainActivity extends AppCompatActivity {
 
         overallProgressText.setText("Success: " + averagePercentage + "%");
 
-        int color;
-        if (averagePercentage >= 95) {
-            color = ContextCompat.getColor(this, R.color.accent_blue);
-        } else {
-            color = ContextCompat.getColor(this, R.color.text_primary);
-        }
+        int color = (averagePercentage >= 95)
+                ? ContextCompat.getColor(this, R.color.accent_blue)
+                : ContextCompat.getColor(this, R.color.text_primary);
+
         overallProgressText.setTextColor(color);
+    }
 
-        // 🔹 Υπολογισμός BONUS για τον τρέχοντα μήνα από τις DailyEntry εγγραφές
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH) + 1;
-        String yearMonth = year + "-" + (month < 10 ? "0" + month : month);
-
+    // 🔹 Υπολογισμός bonus τρέχοντος μήνα
+    private void updateTotalBonusForCurrentMonth() {
         new Thread(() -> {
+            String yearMonth = LocalDate.now().toString().substring(0, 7);
             List<DailyEntry> entries = db.dailyEntryDao().getEntriesForMonth(yearMonth);
-            double totalBonus = BonusCalculator.computeBonusForMonth(entries);
+            double totalBonus = BonusCalculator.calculateMonthlyBonus(entries);
 
             runOnUiThread(() -> {
                 if (totalBonusText != null) {
-                    String bonusText = String.format(Locale.getDefault(),
-                            "Bonus: %.2f€", totalBonus);
+                    String bonusText = String.format(
+                            Locale.getDefault(),
+                            "Bonus: %.2f€",
+                            totalBonus
+                    );
                     totalBonusText.setText(bonusText);
                 }
             });
         }).start();
     }
-
 }

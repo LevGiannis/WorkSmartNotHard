@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/welcomeScroll"
+    android:id="@+id/settingsScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -12,25 +12,25 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textWelcomeTitle"
+            android:id="@+id/textSettingsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Καλωσόρισες!"
-            android:textSize="24sp"
+            android:text="Ρυθμίσεις Προφίλ"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:paddingBottom="6dp" />
 
         <TextView
-            android:id="@+id/textWelcomeSubtitle"
+            android:id="@+id/textSettingsSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Συμπλήρωσε τα στοιχεία σου για να ξεκινήσεις."
+            android:text="Ενημέρωσε τα στοιχεία σου και τον παραλήπτη για τα reports."
             android:textSize="14sp"
             android:paddingBottom="18dp" />
 
         <!-- Όνομα -->
         <EditText
-            android:id="@+id/etName"
+            android:id="@+id/editName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Όνομα"
@@ -42,7 +42,7 @@
 
         <!-- Επώνυμο -->
         <EditText
-            android:id="@+id/etSurname"
+            android:id="@+id/editSurname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Επώνυμο"
@@ -52,12 +52,12 @@
             android:padding="12dp"
             android:layout_marginBottom="10dp" />
 
-        <!-- Email -->
+        <!-- Email χρήστη -->
         <EditText
-            android:id="@+id/etEmail"
+            android:id="@+id/editEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="Email χρήστη"
             android:inputType="textEmailAddress"
             android:importantForAutofill="yes"
             android:autofillHints="emailAddress"
@@ -66,7 +66,7 @@
 
         <!-- Ψευδώνυμο -->
         <EditText
-            android:id="@+id/etNickname"
+            android:id="@+id/editNickname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Ψευδώνυμο"
@@ -76,20 +76,37 @@
 
         <!-- Κωδικός Καταστήματος -->
         <EditText
-            android:id="@+id/etStoreCode"
+            android:id="@+id/editStore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Κωδικός Καταστήματος"
             android:inputType="text"
             android:padding="12dp"
-            android:layout_marginBottom="18dp" />
+            android:layout_marginBottom="16dp" />
 
-        <!-- Continue -->
-        <Button
-            android:id="@+id/btnContinue"
+        <!-- Divider (απλό) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DDDDDD"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Email παραλήπτη report -->
+        <EditText
+            android:id="@+id/editReportEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Συνέχεια"
+            android:hint="Email παραλήπτη report (Excel/CSV)"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:layout_marginBottom="18dp" />
+
+        <!-- Save -->
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Αποθήκευση"
             android:padding="12dp" />
 
     </LinearLayout>
