@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Τίτλος & υπότιτλος -->
         <TextView
             android:id="@+id/textSettingsTitle"
             android:layout_width="match_parent"
@@ -18,88 +19,163 @@
             android:text="Ρυθμίσεις Προφίλ"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:paddingBottom="6dp" />
+            android:paddingBottom="4dp" />
 
         <TextView
             android:id="@+id/textSettingsSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ενημέρωσε τα στοιχεία σου και τον παραλήπτη για τα reports."
+            android:text="Στοιχεία χρήστη και παραλήπτη για τα reports."
             android:textSize="14sp"
             android:paddingBottom="18dp" />
 
+        <!-- ΕΝΟΤΗΤΑ: Στοιχεία χρήστη -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ΣΤΟΙΧΕΙΑ ΧΡΗΣΤΗ"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:letterSpacing="0.08"
+            android:paddingBottom="6dp" />
+
         <!-- Όνομα -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Όνομα"
+            android:textSize="13sp"
+            android:paddingBottom="2dp" />
+
         <EditText
             android:id="@+id/editName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Όνομα"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
             android:inputType="textPersonName"
             android:importantForAutofill="yes"
             android:autofillHints="name"
-            android:padding="12dp"
+            android:hint="π.χ. Γιάννης"
+            android:textSize="14sp"
             android:layout_marginBottom="10dp" />
 
         <!-- Επώνυμο -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Επώνυμο"
+            android:textSize="13sp"
+            android:paddingBottom="2dp" />
+
         <EditText
             android:id="@+id/editSurname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Επώνυμο"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
             android:inputType="textPersonName"
             android:importantForAutofill="yes"
             android:autofillHints="familyName"
-            android:padding="12dp"
+            android:hint="π.χ. Παπαδόπουλος"
+            android:textSize="14sp"
             android:layout_marginBottom="10dp" />
 
         <!-- Email χρήστη -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email χρήστη"
+            android:textSize="13sp"
+            android:paddingBottom="2dp" />
+
         <EditText
             android:id="@+id/editEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email χρήστη"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
             android:inputType="textEmailAddress"
             android:importantForAutofill="yes"
             android:autofillHints="emailAddress"
-            android:padding="12dp"
+            android:hint="π.χ. name@vodafone.gr"
+            android:textSize="14sp"
             android:layout_marginBottom="10dp" />
 
         <!-- Ψευδώνυμο -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ψευδώνυμο"
+            android:textSize="13sp"
+            android:paddingBottom="2dp" />
+
         <EditText
             android:id="@+id/editNickname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ψευδώνυμο"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
             android:inputType="textPersonName"
-            android:padding="12dp"
+            android:hint="π.χ. JohnDoe"
+            android:textSize="14sp"
             android:layout_marginBottom="10dp" />
 
         <!-- Κωδικός Καταστήματος -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Κωδικός Καταστήματος"
+            android:textSize="13sp"
+            android:paddingBottom="2dp" />
+
         <EditText
             android:id="@+id/editStore"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Κωδικός Καταστήματος"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
             android:inputType="text"
-            android:padding="12dp"
+            android:hint="π.χ. VODA123"
+            android:textSize="14sp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Divider (απλό) -->
+        <!-- Divider -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#DDDDDD"
-            android:layout_marginBottom="16dp" />
+            android:background="#33FFFFFF"
+            android:layout_marginBottom="14dp" />
 
-        <!-- Email παραλήπτη report -->
+        <!-- ΕΝΟΤΗΤΑ: Email report -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="EMAIL ΠΑΡΑΛΗΠΤΗ REPORT"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:letterSpacing="0.08"
+            android:paddingBottom="6dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email όπου θα στέλνονται τα αρχεία Excel/CSV."
+            android:textSize="13sp"
+            android:paddingBottom="4dp" />
+
         <EditText
             android:id="@+id/editReportEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email παραλήπτη report (Excel/CSV)"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
             android:inputType="textEmailAddress"
-            android:padding="12dp"
-            android:layout_marginBottom="18dp" />
+            android:hint="π.χ. reports@vodafone.gr"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp" />
 
         <!-- Save -->
         <Button
@@ -107,7 +183,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Αποθήκευση"
-            android:padding="12dp" />
+            android:paddingVertical="10dp" />
 
     </LinearLayout>
 </ScrollView>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Επίλεξε μήνα και έτος"
+        android:textSize="14sp"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Μήνας"
+        android:textSize="13sp"
+        android:paddingBottom="2dp" />
+
+    <Spinner
+        android:id="@+id/spinnerMonth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog_field"
+        android:paddingHorizontal="8dp"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Έτος"
+        android:textSize="13sp"
+        android:paddingBottom="2dp" />
+
+    <Spinner
+        android:id="@+id/spinnerYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog_field"
+        android:paddingHorizontal="8dp" />
+
+</LinearLayout>

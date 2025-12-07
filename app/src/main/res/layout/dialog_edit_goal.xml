@@ -1,20 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="20dp">
 
-    <Spinner
-        android:id="@+id/spinnerCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:id="@+id/inputTarget"
-        android:hint="Νέος Στόχος"
-        android:inputType="number"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp" />
-</LinearLayout>
+        android:orientation="vertical">
+
+        <!-- Τίτλος διαλόγου -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Επεξεργασία Στόχου"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp" />
+
+        <!-- Κατηγορία -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Κατηγορία"
+            android:textSize="13sp"
+            android:paddingBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="8dp" />
+
+        <!-- Γραμμή διαχωρισμού -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Νέος στόχος -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Νέος στόχος (τεμ.)"
+            android:textSize="13sp"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/inputTarget"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
+            android:inputType="number"
+            android:hint="π.χ. 25"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</ScrollView>

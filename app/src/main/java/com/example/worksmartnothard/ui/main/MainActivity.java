@@ -12,6 +12,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
 import com.example.worksmartnothard.R;
 import com.example.worksmartnothard.data.AppDatabase;
 import com.example.worksmartnothard.data.AppPreferences;
@@ -28,6 +35,11 @@ import com.example.worksmartnothard.util.BonusCalculator;
 import com.example.worksmartnothard.viewmodel.ProgressViewModel;
 
 import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.fabDailyHistory).setOnClickListener(v -> showDayPickerDialog());
 
-        findViewById(R.id.fabMonthlyHistory).setOnClickListener(v -> showMonthPickerDialog());
+        findViewById(R.id.fabMonthlyHistory).setOnClickListener(v -> showMonthYearDialog());
 
         findViewById(R.id.fabTasks).setOnClickListener(v ->
                 startActivity(new Intent(this, TasksActivity.class)));
@@ -138,6 +150,69 @@ public class MainActivity extends AppCompatActivity {
         picker.setTitle("Επιλογή ημέρας");
         picker.show();
     }
+
+    private void showMonthYearDialog() {
+        // Τρέχων μήνας/έτος
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        int currentMonth = cal.get(Calendar.MONTH); // 0–11
+
+        // Inflate το custom layout του dialog
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_month_year_picker, null);
+
+        Spinner spinnerMonth = dialogView.findViewById(R.id.spinnerMonth);
+        Spinner spinnerYear  = dialogView.findViewById(R.id.spinnerYear);
+
+        // Μήνες (Ιαν, Φεβ, ...)
+        String[] months = new DateFormatSymbols(Locale.getDefault()).getMonths();
+        List<String> monthNames = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            monthNames.add(months[i]); // μόνο οι 12 μήνες
+        }
+
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                monthNames
+        );
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMonth.setAdapter(monthAdapter);
+        spinnerMonth.setSelection(currentMonth);
+
+        // Έτη (π.χ. currentYear - 3 έως currentYear + 1)
+        List<Integer> years = new ArrayList<>();
+        for (int y = currentYear - 3; y <= currentYear + 1; y++) {
+            years.add(y);
+        }
+
+        ArrayAdapter<Integer> yearAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                years
+        );
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(yearAdapter);
+
+        // Επιλέγουμε το currentYear (τελευταίο της λίστας)
+        spinnerYear.setSelection(years.indexOf(currentYear));
+
+        new AlertDialog.Builder(this)
+                .setTitle("Επιλογή μήνα & έτους")
+                .setView(dialogView)
+                .setNegativeButton("Άκυρο", null)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    int monthIndex = spinnerMonth.getSelectedItemPosition(); // 0–11
+                    int year = (Integer) spinnerYear.getSelectedItem();
+
+                    Intent intent = new Intent(MainActivity.this, MonthHistoryActivity.class);
+                    intent.putExtra(MonthHistoryActivity.EXTRA_YEAR, year);
+                    intent.putExtra(MonthHistoryActivity.EXTRA_MONTH, monthIndex + 1); // 1–12
+                    startActivity(intent);
+                })
+                .show();
+    }
+
 
     private void showMonthPickerDialog() {
         Calendar calendar = Calendar.getInstance();

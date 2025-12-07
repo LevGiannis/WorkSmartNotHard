@@ -1,47 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="20dp">
 
-    <!-- Κατηγορία -->
-    <Spinner
-        android:id="@+id/spinnerCategory"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp" />
+        android:orientation="vertical">
 
-    <!-- Λεζάντα υποκατηγορίας Vodafone Home W/F -->
-    <TextView
-        android:id="@+id/textHomeSubtypeLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Τύπος Vodafone Home W/F"
-        android:visibility="gone"
-        android:layout_marginBottom="4dp" />
+        <!-- Τίτλος οθόνης -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Νέα Καταχώρηση Παραγωγής"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
 
-    <!-- Υποκατηγορία Vodafone Home W/F -->
-    <Spinner
-        android:id="@+id/spinnerHomeSubtype"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginBottom="12dp" />
+        <!-- Κατηγορία -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Κατηγορία"
+            android:textSize="13sp"
+            android:paddingBottom="4dp" />
 
-    <!-- Πλήθος / Ποσό -->
-    <EditText
-        android:id="@+id/editCount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Ποσότητα σε τεμ."
-        android:inputType="number"
-        android:layout_marginBottom="16dp" />
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="8dp"
+            android:layout_marginBottom="12dp" />
 
-    <Button
-        android:id="@+id/buttonSave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Αποθήκευση" />
+        <!-- Λεζάντα υποκατηγορίας Vodafone Home W/F -->
+        <TextView
+            android:id="@+id/textHomeSubtypeLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Τύπος Vodafone Home W/F"
+            android:textSize="13sp"
+            android:paddingBottom="4dp"
+            android:visibility="gone" />
 
-</LinearLayout>
+        <!-- Υποκατηγορία Vodafone Home W/F -->
+        <Spinner
+            android:id="@+id/spinnerHomeSubtype"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="8dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone" />
+
+        <!-- Γραμμή διαχωρισμού -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Ποσότητα -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ποσότητα (τεμ.)"
+            android:textSize="13sp"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/editCount"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
+            android:inputType="number"
+            android:hint="π.χ. 3"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Κουμπί αποθήκευσης -->
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Αποθήκευση"
+            android:paddingVertical="10dp" />
+
+    </LinearLayout>
+
+</ScrollView>

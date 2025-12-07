@@ -1,27 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="20dp"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="20dp">
 
-    <Spinner
-        android:id="@+id/spinnerGoalCategory"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editTarget"
-        android:hint="Στόχος του μήνα"
-        android:inputType="number"
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <!-- Τίτλος οθόνης -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Νέος Μηνιαίος Στόχος"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
 
-    <Button
-        android:id="@+id/buttonSaveGoal"
-        android:text="Αποθήκευση Στόχου"
-        android:layout_marginTop="24dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        <!-- Κατηγορία στόχου -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Κατηγορία"
+            android:textSize="13sp"
+            android:paddingBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spinnerGoalCategory"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="8dp" />
+
+        <!-- Γραμμή διαχωρισμού -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Στόχος του μήνα -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Στόχος του μήνα (τεμ.)"
+            android:textSize="13sp"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/editTarget"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_dialog_field"
+            android:paddingHorizontal="12dp"
+            android:inputType="number"
+            android:hint="π.χ. 25"
+            android:textSize="14sp" />
+
+        <!-- Κουμπί αποθήκευσης -->
+        <Button
+            android:id="@+id/buttonSaveGoal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Αποθήκευση Στόχου"
+            android:layout_marginTop="24dp"
+            android:paddingVertical="10dp" />
+
+    </LinearLayout>
+
+</ScrollView>

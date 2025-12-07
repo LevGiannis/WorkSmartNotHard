@@ -1,22 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tasksRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="20dp">
 
+    <!-- Τίτλος & υπότιτλος -->
+    <TextView
+        android:id="@+id/textTasksTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Εκκρεμότητες"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingBottom="4dp" />
+
+    <TextView
+        android:id="@+id/textTasksSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Παρακολούθηση εκκρεμοτήτων πελατών και προθεσμιών."
+        android:textSize="14sp"
+        android:paddingBottom="12dp" />
+
+    <!-- Διαχωριστική γραμμή -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#33FFFFFF"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Λίστα εκκρεμοτήτων -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTasks"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:layout_marginBottom="12dp" />
 
     <!-- Κάτω μπάρα με 2 κουμπιά -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/buttonAddTask"
@@ -24,15 +51,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Νέα εκκρεμότητα"
-            android:padding="10dp" />
+            android:paddingVertical="10dp" />
 
         <Button
             android:id="@+id/buttonExportTasks"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Export Εκκρεμοτήτων"
-            android:padding="10dp"
+            android:text="Export εκκρεμοτήτων"
+            android:paddingVertical="10dp"
             android:layout_marginStart="8dp" />
 
     </LinearLayout>

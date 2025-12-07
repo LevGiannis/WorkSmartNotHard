@@ -1,20 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/historyRoot"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:background="@color/background_dark">
 
-    <TextView
-        android:id="@+id/textDateTitle"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_width="wrap_content"
+    <!-- Κάρτα κεφαλίδας: Ημερήσιο ιστορικό -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/headerCardHistory"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="12dp"
+        android:elevation="8dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/card_dark">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <!-- Σταθερός τίτλος -->
+            <TextView
+                android:id="@+id/textHistoryTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ημερήσιο Ιστορικό Παραγωγής"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:paddingBottom="4dp" />
+
+            <!-- Ημερομηνία (υπάρχον TextView) -->
+            <TextView
+                android:id="@+id/textDateTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ημερομηνία: -"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:paddingBottom="8dp" />
+
+            <!-- Διαχωριστική γραμμή -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/text_secondary" />
+
+            <!-- Περίληψη ημέρας -->
+            <TextView
+                android:id="@+id/textDaySummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Σύνοψη ημέρας"
+                android:textSize="14sp"
+                android:textColor="@color/text_primary"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Λίστα ημερήσιων καταχωρήσεων -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHistory"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="4dp" />
+
 </LinearLayout>
