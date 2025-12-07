@@ -1,9 +1,17 @@
 package com.example.worksmartnothard.ui.main;
 
+import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,13 +19,6 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.AlertDialog;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import com.example.worksmartnothard.R;
 import com.example.worksmartnothard.data.AppDatabase;
@@ -31,14 +32,12 @@ import com.example.worksmartnothard.ui.history.HistoryActivity;
 import com.example.worksmartnothard.ui.history.MonthHistoryActivity;
 import com.example.worksmartnothard.ui.settings.SettingsActivity;
 import com.example.worksmartnothard.ui.tasks.TasksActivity;
+import com.example.worksmartnothard.ui.tasks.DailyTasksSummaryReceiver;
 import com.example.worksmartnothard.util.BonusCalculator;
 import com.example.worksmartnothard.viewmodel.ProgressViewModel;
 
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 import java.text.DateFormatSymbols;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -96,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.fabAddEntry).setOnClickListener(v ->
                 startActivity(new Intent(this, AddEntryActivity.class)));
 
+        // FAB για στόχους (αντι για το "ορφανό" startActivity που είχες)
         findViewById(R.id.fabAddGoal).setOnClickListener(v ->
                 startActivity(new Intent(this, AddGoalActivity.class)));
 
@@ -110,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel.loadProgressForCurrentMonth();
         updateTaskBadge();
+
+        // 🔔 Καθημερινή ειδοποίηση με όλες τις εκκρεμότητες στις 10:00
+        scheduleDailyTasksSummary();
     }
 
     @Override
@@ -119,15 +122,59 @@ public class MainActivity extends AppCompatActivity {
         updateTaskBadge();
     }
 
+    // 🔔 Προγραμματισμός καθημερινής ειδοποίησης στις 10:00
+    private void scheduleDailyTasksSummary() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) return;
+
+        Intent intent = new Intent(this, DailyTasksSummaryReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                intent,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                        : PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // Αν η ώρα 10:00 για σήμερα έχει ήδη περάσει, προγραμμάτισε από αύριο
+        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        // Δεν μας νοιάζει να είναι "απόλυτα" ακριβές, οπότε inexact για να παίζει παντού χωρίς permissions
+        alarmManager.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent
+        );
+    }
+
     private void updateTaskBadge() {
         new Thread(() -> {
             List<Task> tasks = db.taskDao().getAllTasks();
-            int pendingCount = (int) tasks.stream().filter(task -> !task.done).count();
+            int pendingCount = 0;
+            if (tasks != null) {
+                for (Task t : tasks) {
+                    if (t != null && !t.done) {
+                        pendingCount++;
+                    }
+                }
+            }
 
+            int finalPendingCount = pendingCount;
             runOnUiThread(() -> {
-                if (pendingCount > 0) {
+                if (finalPendingCount > 0) {
                     taskBadge.setVisibility(View.VISIBLE);
-                    taskBadge.setText(String.valueOf(pendingCount));
+                    taskBadge.setText(String.valueOf(finalPendingCount));
                 } else {
                     taskBadge.setVisibility(View.GONE);
                 }
@@ -180,9 +227,9 @@ public class MainActivity extends AppCompatActivity {
         spinnerMonth.setAdapter(monthAdapter);
         spinnerMonth.setSelection(currentMonth);
 
-        // Έτη (π.χ. currentYear - 3 έως currentYear + 1)
+        // Έτη, π.χ. από currentYear - 5 έως currentYear
         List<Integer> years = new ArrayList<>();
-        for (int y = currentYear - 3; y <= currentYear + 1; y++) {
+        for (int y = currentYear - 5; y <= currentYear; y++) {
             years.add(y);
         }
 
@@ -212,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .show();
     }
-
 
     private void showMonthPickerDialog() {
         Calendar calendar = Calendar.getInstance();
