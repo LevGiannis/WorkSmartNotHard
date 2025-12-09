@@ -43,9 +43,9 @@
 
                 <ImageView
                     android:id="@+id/buttonSettings"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:padding="4dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:padding="2dp"
                     android:src="@android:drawable/ic_menu_preferences"
                     android:tint="@android:color/white"
                     android:contentDescription="Ρυθμίσεις" />
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="10dp">
 
                 <!-- Συνολική Πρόοδος -->
                 <TextView
@@ -88,7 +88,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="Success: 0%"
-                    android:textSize="20sp"
+                    android:textSize="19sp"
                     android:textStyle="bold"
                     android:textColor="@color/accent_blue" />
 
@@ -98,9 +98,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bonus: 0.00€"
-                    android:textSize="20sp"
+                    android:textSize="19sp"
                     android:textStyle="bold"
-                    android:paddingStart="12dp"
+                    android:paddingStart="8dp"
                     android:textColor="@android:color/white" />
             </LinearLayout>
 
@@ -115,89 +115,202 @@
         android:layout_weight="1"
         android:padding="4dp" />
 
-    <!-- Κάτω μπάρα με FABs -->
-    <HorizontalScrollView
+    <!-- Κάτω μπάρα με επιλογές μέσα σε κουτί -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bottomActionsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true"
-        android:paddingTop="8dp">
+        android:layout_marginTop="8dp"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/card_dark">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:fillViewport="true"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
 
-            <!-- ➕ Παραγωγή -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAddEntry"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:src="@android:drawable/ic_input_add"
-                android:contentDescription="Καταχώριση Παραγωγής"
-                app:tint="@android:color/white" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <!-- 🎯 Στόχος -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAddGoal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:src="@android:drawable/ic_menu_edit"
-                android:contentDescription="Προσθήκη Στόχου"
-                app:tint="@android:color/white" />
-
-            <!-- 📅 Ημερήσιο Ιστορικό -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabDailyHistory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:src="@android:drawable/ic_menu_day"
-                android:contentDescription="Ιστορικό Ημέρας"
-                app:tint="@android:color/white" />
-
-            <!-- 🗓 Μηνιαίο Ιστορικό -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabMonthlyHistory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:src="@android:drawable/ic_menu_my_calendar"
-                android:contentDescription="Ιστορικό Μήνα"
-                app:tint="@android:color/white" />
-
-            <!-- 📋 Εκκρεμότητες -->
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabTasks"
-                    android:layout_width="wrap_content"
+                <!-- ➕ Παραγωγή -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_menu_agenda"
-                    android:contentDescription="Εκκρεμότητες"
-                    app:tint="@android:color/white" />
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:padding="2dp">
 
-                <TextView
-                    android:id="@+id/taskBadge"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="end|top"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:gravity="center"
-                    android:text="0"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp"
-                    android:background="@drawable/badge_background"
-                    android:visibility="gone"
-                    android:elevation="10dp" />
-            </FrameLayout>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabAddEntry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fabSize="mini"
+                        app:fabCustomSize="44dp"
+                        app:maxImageSize="22dp"
+                        android:layout_marginBottom="2dp"
+                        android:src="@android:drawable/ic_input_add"
+                        android:contentDescription="Καταχώριση Παραγωγής"
+                        app:tint="@android:color/white" />
 
-        </LinearLayout>
-    </HorizontalScrollView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Παραγωγή"
+                        android:textColor="@color/text_primary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <!-- 🎯 Στόχος -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:padding="2dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabAddGoal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fabSize="mini"
+                        app:fabCustomSize="44dp"
+                        app:maxImageSize="22dp"
+                        android:layout_marginBottom="2dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        android:contentDescription="Προσθήκη Στόχου"
+                        app:tint="@android:color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Στόχος"
+                        android:textColor="@color/text_primary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <!-- 📅 Ημερήσιο Ιστορικό -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:padding="2dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabDailyHistory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fabSize="mini"
+                        app:fabCustomSize="44dp"
+                        app:maxImageSize="22dp"
+                        android:layout_marginBottom="2dp"
+                        android:src="@android:drawable/ic_menu_day"
+                        android:contentDescription="Ιστορικό Ημέρας"
+                        app:tint="@android:color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ημέρα"
+                        android:textColor="@color/text_primary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <!-- 🗓 Μηνιαίο Ιστορικό -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:padding="2dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabMonthlyHistory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fabSize="mini"
+                        app:fabCustomSize="44dp"
+                        app:maxImageSize="22dp"
+                        android:layout_marginBottom="2dp"
+                        android:src="@android:drawable/ic_menu_my_calendar"
+                        android:contentDescription="Ιστορικό Μήνα"
+                        app:tint="@android:color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Μήνας"
+                        android:textColor="@color/text_primary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <!-- 📋 Εκκρεμότητες -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:padding="2dp">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabTasks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:fabSize="mini"
+                            app:fabCustomSize="44dp"
+                            app:maxImageSize="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:src="@android:drawable/ic_menu_agenda"
+                            android:contentDescription="Εκκρεμότητες"
+                            app:tint="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/taskBadge"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="end|top"
+                            android:gravity="center"
+                            android:text="0"
+                            android:textColor="@android:color/white"
+                            android:textSize="9sp"
+                            android:background="@drawable/badge_background"
+                            android:visibility="gone"
+                            android:elevation="10dp" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Εκκρεμότητες"
+                        android:textColor="@color/text_primary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>
