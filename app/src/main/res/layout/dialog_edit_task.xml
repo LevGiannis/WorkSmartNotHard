@@ -23,7 +23,6 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-        <!-- ΣΤΟΙΧΕΙΑ ΠΕΛΑΤΗ -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +34,6 @@
             android:textColor="@color/text_secondary"
             android:paddingBottom="8dp" />
 
-        <!-- Όνομα -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Wsnh.TextInput"
             android:layout_width="match_parent"
@@ -50,7 +48,6 @@
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Κινητό -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Wsnh.TextInput"
             android:layout_width="match_parent"
@@ -66,7 +63,6 @@
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ΑΦΜ -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Wsnh.TextInput"
             android:layout_width="match_parent"
@@ -82,7 +78,6 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Τύπος -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Wsnh.TextInput"
             android:layout_width="match_parent"
@@ -98,7 +93,14 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Προθεσμία -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Προθεσμία"
+            android:textSize="13sp"
+            android:paddingTop="12dp"
+            android:paddingBottom="2dp" />
+
         <TextView
             android:id="@+id/textTaskDueDate"
             android:layout_width="match_parent"
@@ -113,7 +115,6 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground" />
 
-        <!-- Γραμμή διαχωρισμού -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -121,7 +122,6 @@
             android:layout_marginTop="14dp"
             android:layout_marginBottom="10dp" />
 
-        <!-- Περιγραφή -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -148,7 +148,6 @@
                 android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Φωτογραφία -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

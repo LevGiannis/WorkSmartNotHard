@@ -7,11 +7,14 @@ import java.util.List;
 public class BonusCalculator {
 
     /**
-     * Υπολογισμός συνολικού bonus για έναν μήνα,
-     * με βάση όλες τις ημερήσιες καταχωρήσεις (DailyEntry).
+     * Υπολογισμός bonus από λίστα καταχωρήσεων.
+     *
+     * Σημείωση: Η λογική bonus είναι ίδια είτε πρόκειται για ημέρα είτε για μήνα.
+     * Η διάκριση γίνεται σε επίπεδο caller (ποια entries περνάει).
      */
-    public static double calculateMonthlyBonus(List<DailyEntry> entries) {
-        if (entries == null || entries.isEmpty()) return 0.0;
+    private static double calculateBonus(List<DailyEntry> entries) {
+        if (entries == null || entries.isEmpty())
+            return 0.0;
 
         double totalBonus = 0.0;
 
@@ -28,7 +31,8 @@ public class BonusCalculator {
         double fwa = 0.0;
 
         for (DailyEntry e : entries) {
-            if (e == null || e.category == null) continue;
+            if (e == null || e.category == null)
+                continue;
 
             String category = e.category.trim();
             double count = e.count;
@@ -137,5 +141,19 @@ public class BonusCalculator {
         }
 
         return totalBonus;
+    }
+
+    /**
+     * Bonus για ημέρα (entries μιας συγκεκριμένης ημερομηνίας).
+     */
+    public static double calculateDailyBonus(List<DailyEntry> entriesForDay) {
+        return calculateBonus(entriesForDay);
+    }
+
+    /**
+     * Bonus για μήνα (entries ενός συγκεκριμένου μήνα).
+     */
+    public static double calculateMonthlyBonus(List<DailyEntry> entriesForMonth) {
+        return calculateBonus(entriesForMonth);
     }
 }

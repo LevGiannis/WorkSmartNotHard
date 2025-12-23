@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.worksmartnothard.model.CategoryProgress;
 import com.example.worksmartnothard.data.AppDatabase;
+import com.example.worksmartnothard.data.CategoryTotal;
 import com.example.worksmartnothard.data.DailyEntry;
 import com.example.worksmartnothard.data.Goal;
 
@@ -44,14 +45,13 @@ public class ProgressViewModel extends AndroidViewModel {
 
             List<Goal> goals = db.goalDao().getGoalsForMonth(year, month);
             HashMap<String, Double> totals = new HashMap<>();
-
-            for (Goal goal : goals) {
-                List<DailyEntry> entries = db.dailyEntryDao().getEntriesForCategoryInMonth(goal.category, yearMonth);
-                double total = 0;
-                for (DailyEntry e : entries) {
-                    total += e.count;
+            List<CategoryTotal> totalsRows = db.dailyEntryDao().getTotalsByCategoryForMonth(yearMonth);
+            if (totalsRows != null) {
+                for (CategoryTotal row : totalsRows) {
+                    if (row != null && row.category != null) {
+                        totals.put(row.category, row.total);
+                    }
                 }
-                totals.put(goal.category, total);
             }
 
             List<CategoryProgress> result = new ArrayList<>();

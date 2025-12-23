@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/background_dark"
     android:padding="16dp">
 
     <TextView
@@ -10,6 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Επίλεξε μήνα και έτος"
         android:textSize="14sp"
+        android:textColor="@color/text_primary"
         android:paddingBottom="8dp" />
 
     <TextView
@@ -17,6 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Μήνας"
         android:textSize="13sp"
+        android:textColor="@color/text_secondary"
         android:paddingBottom="2dp" />
 
     <Spinner
@@ -32,6 +35,7 @@
         android:layout_height="wrap_content"
         android:text="Έτος"
         android:textSize="13sp"
+        android:textColor="@color/text_secondary"
         android:paddingBottom="2dp" />
 
     <Spinner

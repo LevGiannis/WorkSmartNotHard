@@ -28,7 +28,7 @@
             android:id="@+id/textMonthBonus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bonus: 0.00€"
+            android:text="Μπόνους: 0,00€"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/white" />
@@ -37,11 +37,10 @@
     <!-- Κουμπί Export σε Excel -->
     <Button
         android:id="@+id/buttonExportExcel"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Export σε Excel"
+        android:text="Εξαγωγή CSV"
         android:textAllCaps="false"
-        android:layout_gravity="end"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:layout_marginBottom="8dp" />

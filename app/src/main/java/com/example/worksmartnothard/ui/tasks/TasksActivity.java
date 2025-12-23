@@ -1,8 +1,6 @@
 package com.example.worksmartnothard.ui.tasks;
 
 import android.app.AlertDialog;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -11,14 +9,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.TextView;
-
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +29,8 @@ import com.example.worksmartnothard.R;
 import com.example.worksmartnothard.data.AppDatabase;
 import com.example.worksmartnothard.data.AppPreferences;
 import com.example.worksmartnothard.data.Task;
+import com.example.worksmartnothard.ui.common.PhotoAttachmentHelper;
+import com.example.worksmartnothard.ui.common.PhotoViewerActivity;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.text.ParseException;
 import java.util.Calendar;
 
 public class TasksActivity extends AppCompatActivity {
@@ -47,7 +48,12 @@ public class TasksActivity extends AppCompatActivity {
     private TaskAdapter taskAdapter;
     private Button buttonExportTasks;
     private Button buttonAddTask;
+    private EditText editTaskSearch;
     private AppDatabase db;
+
+    private int pendingEditTaskId = -1;
+
+    private PhotoAttachmentHelper photoHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,27 +63,84 @@ public class TasksActivity extends AppCompatActivity {
 
         db = AppDatabase.getDatabase(getApplicationContext());
 
+        photoHelper = new PhotoAttachmentHelper(this);
+
         recyclerTasks = findViewById(R.id.recyclerTasks);
         buttonExportTasks = findViewById(R.id.buttonExportTasks);
         buttonAddTask = findViewById(R.id.buttonAddTask);
+        editTaskSearch = findViewById(R.id.editTaskSearch);
 
-        taskAdapter = new TaskAdapter(db);
+        taskAdapter = new TaskAdapter(db, this::showEditTaskDialog);
         recyclerTasks.setLayoutManager(new LinearLayoutManager(this));
         recyclerTasks.setAdapter(taskAdapter);
+
+        if (editTaskSearch != null) {
+            editTaskSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    taskAdapter.setQuery(s == null ? "" : s.toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+        }
+
+        pendingEditTaskId = getIntent() != null
+                ? getIntent().getIntExtra(TaskReminderScheduler.EXTRA_TASK_ID, -1)
+                : -1;
 
         loadTasksFromDb();
 
         buttonAddTask.setOnClickListener(v -> showAddTaskDialog());
         buttonExportTasks.setOnClickListener(v -> exportTasksToCsv());
 
+    }
 
-
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        pendingEditTaskId = intent != null ? intent.getIntExtra(TaskReminderScheduler.EXTRA_TASK_ID, -1) : -1;
+        // Refresh list so the task exists and then open edit.
+        loadTasksFromDb();
     }
 
     private void loadTasksFromDb() {
         new Thread(() -> {
             List<Task> tasks = db.taskDao().getAllTasks();
-            runOnUiThread(() -> taskAdapter.setTasks(tasks));
+            runOnUiThread(() -> {
+                taskAdapter.setTasks(tasks);
+                if (pendingEditTaskId > 0) {
+                    int taskId = pendingEditTaskId;
+                    pendingEditTaskId = -1;
+                    Task match = null;
+                    if (tasks != null) {
+                        for (Task t : tasks) {
+                            if (t != null && t.id == taskId) {
+                                match = t;
+                                break;
+                            }
+                        }
+                    }
+                    if (match != null) {
+                        showEditTaskDialog(match);
+                    } else {
+                        // Fallback: load from DB and edit.
+                        new Thread(() -> {
+                            Task t = db.taskDao().getTaskById(taskId);
+                            if (t != null) {
+                                runOnUiThread(() -> showEditTaskDialog(t));
+                            }
+                        }).start();
+                    }
+                }
+            });
         }).start();
     }
 
@@ -92,6 +155,32 @@ public class TasksActivity extends AppCompatActivity {
         EditText editTaskType = dialogView.findViewById(R.id.editTaskType);
         EditText editTaskDescription = dialogView.findViewById(R.id.editTaskDescription);
         TextView textTaskDueDate = dialogView.findViewById(R.id.textTaskDueDate);
+
+        Button buttonAttachPhoto = dialogView.findViewById(R.id.buttonAttachPhoto);
+        Button buttonRemovePhoto = dialogView.findViewById(R.id.buttonRemovePhoto);
+        TextView textPhotoStatus = dialogView.findViewById(R.id.textPhotoStatus);
+        ImageView imagePhotoPreview = dialogView.findViewById(R.id.imagePhotoPreview);
+
+        final String[] photoUriHolder = new String[] { null };
+        updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto, photoUriHolder[0]);
+        buttonAttachPhoto.setOnClickListener(v -> photoHelper.showChooser(uri -> {
+            photoUriHolder[0] = uri == null ? null : uri.toString();
+            updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto,
+                    photoUriHolder[0]);
+        }, false));
+
+        buttonRemovePhoto.setOnClickListener(v -> {
+            photoUriHolder[0] = null;
+            updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto, null);
+        });
+
+        imagePhotoPreview.setOnClickListener(v -> {
+            if (TextUtils.isEmpty(photoUriHolder[0]))
+                return;
+            Intent i = new Intent(this, PhotoViewerActivity.class);
+            i.putExtra(PhotoViewerActivity.EXTRA_PHOTO_URI, photoUriHolder[0]);
+            startActivity(i);
+        });
 
         // default: προθεσμία = σήμερα
         Calendar cal = Calendar.getInstance();
@@ -115,8 +204,7 @@ public class TasksActivity extends AppCompatActivity {
                         dueDateHolder[0] = selected;
                         textTaskDueDate.setText("Προθεσμία: " + selected);
                     },
-                    year, month, day
-            ).show();
+                    year, month, day).show();
         });
 
         new AlertDialog.Builder(this)
@@ -150,24 +238,152 @@ public class TasksActivity extends AppCompatActivity {
                             dateCreated,
                             type,
                             dueDate,
-                            false
-                    );
+                            photoUriHolder[0],
+                            false);
 
                     // Εισαγωγή στη βάση
                     new Thread(() -> {
-                        db.taskDao().insertTask(newTask);
-                        List<Task> updated = db.taskDao().getAllTasks();
-                        runOnUiThread(() -> taskAdapter.setTasks(updated));
-                    }).start();
+                        long insertedId = db.taskDao().insertTask(newTask);
+                        newTask.id = (int) insertedId;
 
-                    // Προγραμματισμός ειδοποίησης για την προθεσμία
-                    scheduleTaskNotification(name, description, dueDate);
+                        // Προγραμματισμός ειδοποίησης για την προθεσμία (ακυρώσιμο με βάση το task id)
+                        TaskReminderScheduler.ScheduleResult result = TaskReminderScheduler
+                                .schedule(getApplicationContext(), newTask, true);
+
+                        List<Task> updated = db.taskDao().getAllTasks();
+                        runOnUiThread(() -> {
+                            taskAdapter.setTasks(updated);
+                            showScheduleToast(result);
+                        });
+                    }).start();
 
                 })
                 .setNegativeButton("Άκυρο", null)
                 .show();
     }
 
+    private void showEditTaskDialog(Task task) {
+        if (task == null) {
+            return;
+        }
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_task, null);
+
+        EditText editTaskName = dialogView.findViewById(R.id.editTaskName);
+        EditText editTaskPhone = dialogView.findViewById(R.id.editTaskPhone);
+        EditText editTaskAfm = dialogView.findViewById(R.id.editTaskAfm);
+        EditText editTaskType = dialogView.findViewById(R.id.editTaskType);
+        EditText editTaskDescription = dialogView.findViewById(R.id.editTaskDescription);
+        TextView textTaskDueDate = dialogView.findViewById(R.id.textTaskDueDate);
+
+        Button buttonAttachPhoto = dialogView.findViewById(R.id.buttonAttachPhoto);
+        Button buttonRemovePhoto = dialogView.findViewById(R.id.buttonRemovePhoto);
+        TextView textPhotoStatus = dialogView.findViewById(R.id.textPhotoStatus);
+        ImageView imagePhotoPreview = dialogView.findViewById(R.id.imagePhotoPreview);
+
+        editTaskName.setText(safe(task.name));
+        editTaskPhone.setText(safe(task.phone));
+        editTaskAfm.setText(safe(task.afm));
+        editTaskType.setText(safe(task.type));
+        editTaskDescription.setText(safe(task.description));
+
+        Calendar cal = Calendar.getInstance();
+        String[] dueDateHolder = new String[1];
+        dueDateHolder[0] = TextUtils.isEmpty(task.dueDate)
+                ? new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime())
+                : task.dueDate;
+        textTaskDueDate.setText("Προθεσμία: " + dueDateHolder[0]);
+
+        textTaskDueDate.setOnClickListener(v -> {
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+
+            new DatePickerDialog(
+                    this,
+                    (view, y, m, d) -> {
+                        cal.set(Calendar.YEAR, y);
+                        cal.set(Calendar.MONTH, m);
+                        cal.set(Calendar.DAY_OF_MONTH, d);
+                        String selected = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
+                        dueDateHolder[0] = selected;
+                        textTaskDueDate.setText("Προθεσμία: " + selected);
+                    },
+                    year, month, day).show();
+        });
+
+        final String[] photoUriHolder = new String[] { task.photoUri };
+        updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto, photoUriHolder[0]);
+        buttonAttachPhoto.setOnClickListener(v -> photoHelper.showChooser(uri -> {
+            photoUriHolder[0] = uri == null ? null : uri.toString();
+            updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto,
+                    photoUriHolder[0]);
+        }, false));
+
+        buttonRemovePhoto.setOnClickListener(v -> {
+            photoUriHolder[0] = null;
+            updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto, null);
+        });
+
+        imagePhotoPreview.setOnClickListener(v -> {
+            if (TextUtils.isEmpty(photoUriHolder[0]))
+                return;
+            Intent i = new Intent(this, PhotoViewerActivity.class);
+            i.putExtra(PhotoViewerActivity.EXTRA_PHOTO_URI, photoUriHolder[0]);
+            startActivity(i);
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Επεξεργασία Εκκρεμότητας")
+                .setView(dialogView)
+                .setPositiveButton("Αποθήκευση", null)
+                .setNegativeButton("Άκυρο", null)
+                .create();
+
+        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(btn -> {
+            String name = safe(editTaskName.getText().toString());
+            String phone = safe(editTaskPhone.getText().toString());
+            String afm = safe(editTaskAfm.getText().toString());
+            String type = safe(editTaskType.getText().toString());
+            String description = safe(editTaskDescription.getText().toString());
+            String dueDate = safe(dueDateHolder[0]);
+
+            if (TextUtils.isEmpty(name) && TextUtils.isEmpty(description)) {
+                Toast.makeText(this, "Συμπλήρωσε τουλάχιστον όνομα ή περιγραφή", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (TextUtils.isEmpty(type)) {
+                type = "Γενικό";
+            }
+
+            task.name = name;
+            task.phone = phone;
+            task.afm = afm;
+            task.type = type;
+            task.description = description;
+            task.dueDate = dueDate;
+            task.photoUri = TextUtils.isEmpty(photoUriHolder[0]) ? null : photoUriHolder[0];
+
+            new Thread(() -> {
+                db.taskDao().updateTask(task);
+
+                // Keep reminders consistent with latest data.
+                TaskReminderScheduler.cancel(getApplicationContext(), task.id);
+                if (!task.done) {
+                    TaskReminderScheduler.schedule(getApplicationContext(), task, false);
+                }
+
+                runOnUiThread(() -> {
+                    loadTasksFromDb();
+                    Toast.makeText(this, "Αποθηκεύτηκε", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                });
+            }).start();
+        }));
+
+        dialog.show();
+    }
 
     private void sendTestNotificationNow() {
         Intent intent = new Intent(this, TaskReminderReceiver.class);
@@ -178,123 +394,31 @@ public class TasksActivity extends AppCompatActivity {
         sendBroadcast(intent);
     }
 
-    private void scheduleTaskNotification(String name, String description, String dueDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Calendar now = Calendar.getInstance();
-        long nowMillis = now.getTimeInMillis();
-
-        Date date;
-        try {
-            date = sdf.parse(dueDate);
-            if (date == null) return;
-        } catch (ParseException e) {
-            e.printStackTrace();
+    private void showScheduleToast(TaskReminderScheduler.ScheduleResult result) {
+        if (result == null || result.triggerTimes == null || result.triggerTimes.isEmpty()) {
             return;
         }
 
-        // 1️⃣ Υπενθύμιση στις 10:00
-        Calendar calMorning = Calendar.getInstance();
-        calMorning.setTime(date);
-        calMorning.set(Calendar.HOUR_OF_DAY, 10);
-        calMorning.set(Calendar.MINUTE, 0);
-        calMorning.set(Calendar.SECOND, 0);
-        long triggerMorning = calMorning.getTimeInMillis();
-
-        // 2️⃣ Υπενθύμιση στις 17:00
-        Calendar calAfternoon = Calendar.getInstance();
-        calAfternoon.setTime(date);
-        calAfternoon.set(Calendar.HOUR_OF_DAY, 17);
-        calAfternoon.set(Calendar.MINUTE, 30);
-        calAfternoon.set(Calendar.SECOND, 0);
-        long triggerAfternoon = calAfternoon.getTimeInMillis();
-
-        List<String> timesScheduled = new ArrayList<>();
-
-        // Αν η ώρα είναι στο μέλλον → ορίζουμε alarm
-        if (triggerMorning > nowMillis) {
-            scheduleSingleAlarm(triggerMorning, name, description);
-            timesScheduled.add(
-                    new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-                            .format(calMorning.getTime())
-            );
-        }
-
-        if (triggerAfternoon > nowMillis) {
-            scheduleSingleAlarm(triggerAfternoon, name, description);
-            timesScheduled.add(
-                    new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-                            .format(calAfternoon.getTime())
-            );
-        }
-
-        // Αν δεν προγραμματίστηκε καμία (ημερομηνία & ώρες έχουν περάσει) → σε 10 δευτερόλεπτα
-        if (timesScheduled.isEmpty()) {
-            Calendar calFallback = Calendar.getInstance();
-            calFallback.add(Calendar.SECOND, 10);
-            long triggerFallback = calFallback.getTimeInMillis();
-
-            scheduleSingleAlarm(triggerFallback, name, description);
-
+        if (result.usedFallback) {
             String formatted = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-                    .format(calFallback.getTime());
+                    .format(new Date(result.triggerTimes.get(0)));
             Toast.makeText(
                     this,
                     "Η προθεσμία έχει περάσει.\nΈβαλα υπενθύμιση σε 10 δευτερόλεπτα:\n" + formatted,
-                    Toast.LENGTH_LONG
-            ).show();
-        } else {
-            String msg = "Η υπενθύμιση ορίστηκε για:\n";
-            for (String t : timesScheduled) {
-                msg += "• " + t + "\n";
-            }
-            Toast.makeText(this, msg.trim(), Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG).show();
+            return;
         }
+
+        StringBuilder msg = new StringBuilder("Η υπενθύμιση ορίστηκε για:\n");
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        for (long t : result.triggerTimes) {
+            msg.append("• ").append(df.format(new Date(t))).append("\n");
+        }
+        Toast.makeText(this, msg.toString().trim(), Toast.LENGTH_LONG).show();
     }
 
-
-    private void scheduleSingleAlarm(long triggerAt, String name, String description) {
-        Intent intent = new Intent(this, TaskReminderReceiver.class);
-        intent.putExtra("task_name", name);
-        intent.putExtra("task_description", description);
-
-        int requestCode = (int) System.currentTimeMillis();
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this,
-                requestCode,
-                intent,
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                        ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                        : PendingIntent.FLAG_UPDATE_CURRENT
-        );
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (alarmManager == null) return;
-
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                // Android 12+ → inexact alarm (δεν χρειάζεται SCHEDULE_EXACT_ALARM)
-                alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerAt,
-                        pendingIntent
-                );
-            } else {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent);
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-            Toast.makeText(
-                    this,
-                    "Δεν μπόρεσα να ορίσω ακριβή υπενθύμιση, αλλά η εκκρεμότητα αποθηκεύτηκε.",
-                    Toast.LENGTH_LONG
-            ).show();
-        }
-    }
-
-    // 🔹 Export εκκρεμοτήτων (done == false) -> σε CSV στο Downloads + email, ΟΠΩΣ στον μήνα
+    // 🔹 Export εκκρεμοτήτων (done == false) -> σε CSV στο Downloads + email, ΟΠΩΣ
+    // στον μήνα
     private void exportTasksToCsv() {
         List<Task> allTasks = taskAdapter.getTasks();
         if (allTasks == null) {
@@ -369,30 +493,25 @@ public class TasksActivity extends AppCompatActivity {
 
         Uri item = resolver.insert(collection, values);
         if (item == null) {
-            runOnUiThread(() ->
-                    Toast.makeText(this, "Σφάλμα δημιουργίας αρχείου στις Λήψεις", Toast.LENGTH_SHORT).show()
-            );
+            runOnUiThread(
+                    () -> Toast.makeText(this, "Σφάλμα δημιουργίας αρχείου στις Λήψεις", Toast.LENGTH_SHORT).show());
             return;
         }
 
         try (OutputStream out = resolver.openOutputStream(item)) {
             if (out == null) {
-                runOnUiThread(() ->
-                        Toast.makeText(this, "Σφάλμα ανοίγματος αρχείου", Toast.LENGTH_SHORT).show()
-                );
+                runOnUiThread(() -> Toast.makeText(this, "Σφάλμα ανοίγματος αρχείου", Toast.LENGTH_SHORT).show());
                 return;
             }
 
             // BOM για ελληνικά σε Excel
-            out.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
+            out.write(new byte[] { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF });
             out.write(csvContent.getBytes(StandardCharsets.UTF_8));
             out.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
-            runOnUiThread(() ->
-                    Toast.makeText(this, "Σφάλμα κατά το export", Toast.LENGTH_SHORT).show()
-            );
+            runOnUiThread(() -> Toast.makeText(this, "Σφάλμα κατά το export", Toast.LENGTH_SHORT).show());
             return;
         }
 
@@ -415,7 +534,7 @@ public class TasksActivity extends AppCompatActivity {
 
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("text/csv");
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{savedEmail});
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { savedEmail });
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Export Εκκρεμοτήτων");
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Σας επισυνάπτω το αρχείο με τις εκκρεμότητες.");
         emailIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
@@ -426,5 +545,29 @@ public class TasksActivity extends AppCompatActivity {
 
     private String safe(String text) {
         return text == null ? "" : text.trim();
+    }
+
+    private void updatePhotoPreview(TextView status, ImageView preview, Button attach, Button remove, String photoUri) {
+        if (TextUtils.isEmpty(photoUri)) {
+            status.setText("Καμία φωτογραφία");
+            preview.setVisibility(View.GONE);
+            preview.setImageDrawable(null);
+            if (attach != null)
+                attach.setText("Επισύναψη φωτογραφίας");
+            if (remove != null)
+                remove.setVisibility(View.GONE);
+            return;
+        }
+
+        status.setText("Φωτογραφία: ΟΚ (πάτησε για προβολή)");
+        preview.setVisibility(View.VISIBLE);
+        if (attach != null)
+            attach.setText("Αλλαγή φωτογραφίας");
+        if (remove != null)
+            remove.setVisibility(View.VISIBLE);
+        try {
+            preview.setImageURI(Uri.parse(photoUri));
+        } catch (Exception ignored) {
+        }
     }
 }

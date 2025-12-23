@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="categories">
+        <item>PortIN mobile</item>
+        <item>Exprepay</item>
+        <item>Vodafone Home W/F</item>
+        <item>Migration FTTH</item>
+        <item>Post2post</item>
+        <item>Ec2post</item>
+        <item>First</item>
+        <item>New Connection</item>
+        <item>Ραντεβού</item>
+        <item>Συσκευές</item>
+        <item>TV</item>
+        <item>Migration VDSL</item>
+    </string-array>
+
     <string-array name="vodafone_home_types">
         <item>ADSL 24</item>
         <item>ADSL 24 TRIPLE</item>
@@ -8,6 +23,7 @@
         <item>VDSL TRIPLE</item>
         <item>DOUBLE 300/500/1000</item>
         <item>TRIPLE 300/500/1000</item>
+        <item>FWA</item>
     </string-array>
 
 </resources>

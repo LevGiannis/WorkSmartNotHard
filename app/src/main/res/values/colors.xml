@@ -9,15 +9,25 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- 🔥 Νέα για το dark theme -->
-    <color name="background_dark">#121212</color>
-    <color name="card_dark">#1E1E1E</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B0B0B0</color>
-    <color name="accent_blue">#2196F3</color>
+    <!-- Professional dark theme: slate/navy neutrals + limited neutral accents -->
+    <color name="background_dark">#0B1220</color>
+    <color name="card_dark">#101A2E</color>
+    <color name="text_primary">#EAF0FF</color>
+    <color name="text_secondary">#A7B0C3</color>
 
-    <color name="accent_green">#4CAF50</color>
-    <color name="accent_purple">#FF6200EE</color>
+    <!-- Brand neutral gray (for a minimal, professional look on dark surfaces) -->
+    <color name="accent_blue">#6A7280</color>
+    <color name="accent_blue_dark">#4B5260</color>
+    <color name="accent_blue_30">#4D6A7280</color>
+
+    <color name="accent_green">#16A34A</color>
+    <!-- Keep palette minimal: align secondary accent with brand neutral -->
+    <color name="accent_purple">@color/accent_blue</color>
+
+    <!-- UI tokens (extracted from existing hardcoded values) -->
+    <color name="field_bg">#0F1B33</color>
+    <color name="field_stroke">#243457</color>
+    <color name="divider_translucent">#24FFFFFF</color>
 
 
 </resources>

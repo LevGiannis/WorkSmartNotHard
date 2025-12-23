@@ -15,7 +15,10 @@ public interface TaskDao {
     List<Task> getAllTasks();
 
     @Insert
-    void insertTask(Task task);
+    long insertTask(Task task);
+
+    @Query("SELECT * FROM tasks WHERE id = :id LIMIT 1")
+    Task getTaskById(int id);
 
     @Update
     void updateTask(Task task);

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp"
+    android:gravity="center_vertical">
+
+    <CheckBox
+        android:id="@+id/checkCategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/text_primary"
+        android:minHeight="0dp" />
+
+    <EditText
+        android:id="@+id/editCategoryTarget"
+        android:layout_width="92dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_dialog_field"
+        android:paddingHorizontal="12dp"
+        android:hint="0"
+        android:inputType="number"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_secondary"
+        android:textSize="14sp" />
+
+</LinearLayout>

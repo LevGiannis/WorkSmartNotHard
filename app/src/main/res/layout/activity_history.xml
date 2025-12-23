@@ -9,17 +9,14 @@
     android:background="@color/background_dark">
 
     <!-- Κάρτα κεφαλίδας: Ημερήσιο ιστορικό -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/headerCardHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:elevation="8dp"
         android:foreground="?android:attr/selectableItemBackground"
-        app:cardUseCompatPadding="true"
-        app:cardCornerRadius="18dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/card_dark">
+        style="@style/Wsnh.Card">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,7 +49,24 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/text_secondary" />
+                android:background="@color/divider_translucent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Wsnh.TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Αναζήτηση">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editHistorySearch"
+                    style="@style/Wsnh.TextInput.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Περίληψη ημέρας -->
             <TextView
@@ -64,7 +78,7 @@
                 android:textColor="@color/text_primary"
                 android:paddingTop="8dp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Λίστα ημερήσιων καταχωρήσεων -->
     <androidx.recyclerview.widget.RecyclerView

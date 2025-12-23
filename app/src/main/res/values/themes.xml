@@ -1,5 +1,33 @@
 <resources>
-    <style name="Theme.WorkSmartNotHard" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize colors if you want -->
+    <style name="Base.Theme.WorkSmartNotHard" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent_blue</item>
+        <item name="colorPrimaryVariant">@color/accent_blue_dark</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+
+        <item name="colorSecondary">@color/accent_blue</item>
+        <item name="colorSecondaryVariant">@color/accent_blue_dark</item>
+        <item name="colorOnSecondary">@color/text_primary</item>
+
+        <item name="colorSurface">@color/card_dark</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+
+        <item name="colorControlActivated">@color/accent_blue</item>
+        <item name="colorControlHighlight">@color/accent_blue_30</item>
+        <item name="android:colorAccent">@color/accent_blue</item>
+
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Wsnh.MaterialAlertDialog</item>
+
+        <item name="materialButtonStyle">@style/Wsnh.Button.Primary</item>
+        <item name="materialButtonOutlinedStyle">@style/Wsnh.Button.Outlined</item>
+        <item name="textInputStyle">@style/Wsnh.TextInput</item>
+
+        <item name="android:statusBarColor">@color/accent_blue_dark</item>
+        <item name="android:navigationBarColor">@color/background_dark</item>
+        <item name="android:windowBackground">@color/background_dark</item>
     </style>
+
+    <style name="Theme.WorkSmartNotHard" parent="Base.Theme.WorkSmartNotHard" />
 </resources>

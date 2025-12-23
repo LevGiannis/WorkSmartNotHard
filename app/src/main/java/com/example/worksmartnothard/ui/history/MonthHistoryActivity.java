@@ -79,8 +79,7 @@ public class MonthHistoryActivity extends AppCompatActivity {
                 Calendar.getInstance().get(Calendar.MONTH) + 1);
 
         titleText.setText(
-                String.format(Locale.getDefault(), "Ιστορικό: %02d/%d", selectedMonth, selectedYear)
-        );
+                String.format(Locale.getDefault(), "Ιστορικό: %02d/%d", selectedMonth, selectedYear));
 
         viewModel.getProgressList().observe(this, progressList -> {
             currentProgressList = progressList;
@@ -99,29 +98,26 @@ public class MonthHistoryActivity extends AppCompatActivity {
         new Thread(() -> {
             String yearMonth = String.format(Locale.getDefault(), "%04d-%02d",
                     selectedYear, selectedMonth);
-            List<DailyEntry> entries =
-                    db.dailyEntryDao().getEntriesForMonth(yearMonth);
+            List<DailyEntry> entries = db.dailyEntryDao().getEntriesForMonth(yearMonth);
 
             double totalBonus = BonusCalculator.calculateMonthlyBonus(entries);
 
             runOnUiThread(() -> monthBonusText.setText(
-                    String.format(Locale.getDefault(), "Bonus: %.2f€", totalBonus)
-            ));
+                    String.format(Locale.getDefault(), "Μπόνους: %.2f€", totalBonus)));
         }).start();
     }
 
     // Ετοιμάζει το CSV για τον συγκεκριμένο μήνα και το περνάει για αποθήκευση.
     private void exportMonthToCsv() {
         if (currentProgressList == null || currentProgressList.isEmpty()) {
-            Toast.makeText(this, "Δεν υπάρχουν δεδομένα για export", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Δεν υπάρχουν δεδομένα για εξαγωγή", Toast.LENGTH_SHORT).show();
             return;
         }
 
         new Thread(() -> {
             String yearMonth = String.format(Locale.getDefault(), "%04d-%02d",
                     selectedYear, selectedMonth);
-            List<DailyEntry> entries =
-                    db.dailyEntryDao().getEntriesForMonth(yearMonth);
+            List<DailyEntry> entries = db.dailyEntryDao().getEntriesForMonth(yearMonth);
 
             double totalBonus = BonusCalculator.calculateMonthlyBonus(entries);
 
@@ -143,12 +139,11 @@ public class MonthHistoryActivity extends AppCompatActivity {
                             selectedMonth, selectedYear))
                     .append("\n");
             sb.append(String.format(Locale.US,
-                    "Συνολικό Bonus Μήνα;%.2f€\n\n", totalBonus));
-            sb.append("Κατηγορία;Στόχος;Επίτευξη;Επιτυχία %;Bonus (€)\n");
+                    "Συνολικό Μπόνους Μήνα;%.2f€\n\n", totalBonus));
+            sb.append("Κατηγορία;Στόχος;Επίτευξη;Επιτυχία %;Μπόνους (€)\n");
 
             for (CategoryProgress p : currentProgressList) {
-                List<DailyEntry> catEntries =
-                        entriesByCategory.getOrDefault(p.category, new ArrayList<>());
+                List<DailyEntry> catEntries = entriesByCategory.getOrDefault(p.category, new ArrayList<>());
 
                 double categoryBonus = BonusCalculator.calculateMonthlyBonus(catEntries);
                 int percent = p.getPercentage();
@@ -160,7 +155,7 @@ public class MonthHistoryActivity extends AppCompatActivity {
 
             sb.append("\n")
                     .append(String.format(Locale.US,
-                            "ΣΥΝΟΛΙΚΟ BONUS ΜΗΝΑ;;;;%.2f\n", totalBonus));
+                            "ΣΥΝΟΛΙΚΟ ΜΠΟΝΟΥΣ ΜΗΝΑ;;;;%.2f\n", totalBonus));
 
             saveMonthCsvToDownloads(sb.toString());
         }).start();
@@ -200,45 +195,37 @@ public class MonthHistoryActivity extends AppCompatActivity {
             item = resolver.insert(collection, values);
         } catch (Exception e) {
             e.printStackTrace();
-            runOnUiThread(() ->
-                    Toast.makeText(this,
-                            "Σφάλμα δημιουργίας αρχείου στις Λήψεις",
-                            Toast.LENGTH_SHORT).show()
-            );
+            runOnUiThread(() -> Toast.makeText(this,
+                    "Σφάλμα δημιουργίας αρχείου στις Λήψεις",
+                    Toast.LENGTH_SHORT).show());
             return;
         }
 
         if (item == null) {
-            runOnUiThread(() ->
-                    Toast.makeText(this,
-                            "Σφάλμα δημιουργίας αρχείου στις Λήψεις",
-                            Toast.LENGTH_SHORT).show()
-            );
+            runOnUiThread(() -> Toast.makeText(this,
+                    "Σφάλμα δημιουργίας αρχείου στις Λήψεις",
+                    Toast.LENGTH_SHORT).show());
             return;
         }
 
         try (OutputStream out = resolver.openOutputStream(item)) {
             if (out == null) {
-                runOnUiThread(() ->
-                        Toast.makeText(this,
-                                "Σφάλμα ανοίγματος αρχείου",
-                                Toast.LENGTH_SHORT).show()
-                );
+                runOnUiThread(() -> Toast.makeText(this,
+                        "Σφάλμα ανοίγματος αρχείου",
+                        Toast.LENGTH_SHORT).show());
                 return;
             }
 
             // BOM UTF-8 για σωστά ελληνικά στο Excel (όπως στο TasksActivity)
-            out.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
+            out.write(new byte[] { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF });
             out.write(csvContent.getBytes(StandardCharsets.UTF_8));
             out.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
-            runOnUiThread(() ->
-                    Toast.makeText(this,
-                            "Σφάλμα κατά το export",
-                            Toast.LENGTH_SHORT).show()
-            );
+            runOnUiThread(() -> Toast.makeText(this,
+                    "Σφάλμα κατά το export",
+                    Toast.LENGTH_SHORT).show());
             return;
         }
 
@@ -271,7 +258,7 @@ public class MonthHistoryActivity extends AppCompatActivity {
         emailIntent.setType("text/csv");
 
         if (savedEmail != null && !savedEmail.trim().isEmpty()) {
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{savedEmail});
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { savedEmail });
         }
 
         emailIntent.putExtra(Intent.EXTRA_SUBJECT,

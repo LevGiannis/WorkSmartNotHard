@@ -1,73 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_dark"
     android:padding="20dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="Στόχοι Μήνα"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Τίτλος οθόνης -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Νέος Μηνιαίος Στόχος"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="16dp" />
+    <Button
+        android:id="@+id/buttonAddCategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Νέα κατηγορία"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Κατηγορία στόχου -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Κατηγορία"
-            android:textSize="13sp"
-            android:paddingBottom="4dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerGoalCategories"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@id/buttonAddCategory"
+        app:layout_constraintBottom_toTopOf="@id/buttonSaveGoals"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Spinner
-            android:id="@+id/spinnerGoalCategory"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_dialog_field"
-            android:paddingHorizontal="8dp" />
+    <Button
+        android:id="@+id/buttonSaveGoals"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Αποθήκευση"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Γραμμή διαχωρισμού -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#33FFFFFF"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Στόχος του μήνα -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Στόχος του μήνα (τεμ.)"
-            android:textSize="13sp"
-            android:paddingBottom="4dp" />
-
-        <EditText
-            android:id="@+id/editTarget"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_dialog_field"
-            android:paddingHorizontal="12dp"
-            android:inputType="number"
-            android:hint="π.χ. 25"
-            android:textSize="14sp" />
-
-        <!-- Κουμπί αποθήκευσης -->
-        <Button
-            android:id="@+id/buttonSaveGoal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Αποθήκευση Στόχου"
-            android:layout_marginTop="24dp"
-            android:paddingVertical="10dp" />
-
-    </LinearLayout>
-
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

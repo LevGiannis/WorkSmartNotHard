@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView taskBadge;
     private TextView overallProgressText;
     private TextView userInfoText;
-    private TextView totalBonusText;   // Συνολικό Bonus
+    private TextView totalBonusText; // Συνολικό Μπόνους
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,9 @@ public class MainActivity extends AppCompatActivity {
         userInfoText = findViewById(R.id.textUserInfo);
         String nickname = AppPreferences.getNickname(this);
         String storeCode = AppPreferences.getStoreCode(this);
-        userInfoText.setText("📍 " + storeCode + " | 👤 " + nickname);
+        String storeDisplay = "Κατάστημα".equals(storeCode) ? "—" : storeCode;
+        String nicknameDisplay = "Χρήστης".equals(nickname) ? "—" : nickname;
+        userInfoText.setText(storeDisplay + "  •  " + nicknameDisplay);
 
         // 🔧 Συνολική πρόοδος και bonus
         overallProgressText = findViewById(R.id.textOverallProgress);
@@ -92,19 +94,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // FABs
-        findViewById(R.id.fabAddEntry).setOnClickListener(v ->
-                startActivity(new Intent(this, AddEntryActivity.class)));
+        findViewById(R.id.fabAddEntry).setOnClickListener(v -> startActivity(new Intent(this, AddEntryActivity.class)));
 
         // FAB για στόχους (αντι για το "ορφανό" startActivity που είχες)
-        findViewById(R.id.fabAddGoal).setOnClickListener(v ->
-                startActivity(new Intent(this, AddGoalActivity.class)));
+        findViewById(R.id.fabAddGoal).setOnClickListener(v -> startActivity(new Intent(this, AddGoalActivity.class)));
 
         findViewById(R.id.fabDailyHistory).setOnClickListener(v -> showDayPickerDialog());
 
         findViewById(R.id.fabMonthlyHistory).setOnClickListener(v -> showMonthYearDialog());
 
-        findViewById(R.id.fabTasks).setOnClickListener(v ->
-                startActivity(new Intent(this, TasksActivity.class)));
+        findViewById(R.id.fabTasks).setOnClickListener(v -> startActivity(new Intent(this, TasksActivity.class)));
 
         taskBadge = findViewById(R.id.taskBadge);
 
@@ -125,7 +124,8 @@ public class MainActivity extends AppCompatActivity {
     // 🔔 Προγραμματισμός καθημερινής ειδοποίησης στις 10:00
     private void scheduleDailyTasksSummary() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager == null) return;
+        if (alarmManager == null)
+            return;
 
         Intent intent = new Intent(this, DailyTasksSummaryReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -134,8 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 intent,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                         ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                        : PendingIntent.FLAG_UPDATE_CURRENT
-        );
+                        : PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -149,13 +148,13 @@ public class MainActivity extends AppCompatActivity {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
 
-        // Δεν μας νοιάζει να είναι "απόλυτα" ακριβές, οπότε inexact για να παίζει παντού χωρίς permissions
+        // Δεν μας νοιάζει να είναι "απόλυτα" ακριβές, οπότε inexact για να παίζει
+        // παντού χωρίς permissions
         alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY,
-                pendingIntent
-        );
+                pendingIntent);
     }
 
     private void updateTaskBadge() {
@@ -209,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.dialog_month_year_picker, null);
 
         Spinner spinnerMonth = dialogView.findViewById(R.id.spinnerMonth);
-        Spinner spinnerYear  = dialogView.findViewById(R.id.spinnerYear);
+        Spinner spinnerYear = dialogView.findViewById(R.id.spinnerYear);
 
         // Μήνες (Ιαν, Φεβ, ...)
         String[] months = new DateFormatSymbols(Locale.getDefault()).getMonths();
@@ -221,8 +220,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                monthNames
-        );
+                monthNames);
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMonth.setAdapter(monthAdapter);
         spinnerMonth.setSelection(currentMonth);
@@ -236,8 +234,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<Integer> yearAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                years
-        );
+                years);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYear.setAdapter(yearAdapter);
 
@@ -276,33 +273,31 @@ public class MainActivity extends AppCompatActivity {
     // 🔹 Υπολογισμός ποσοστιαίας συνολικής επιτυχίας
     private void updateOverallProgress(List<CategoryProgress> progressList) {
         if (progressList == null || progressList.isEmpty()) {
-            overallProgressText.setText("Success: 0%");
+            overallProgressText.setText("Επιτυχία: 0%");
             overallProgressText.setTextColor(
                     ContextCompat.getColor(this, R.color.text_primary));
             if (totalBonusText != null) {
-                totalBonusText.setText("Bonus: 0.00€");
+                totalBonusText.setText("Μπόνους: 0,00€");
             }
             return;
         }
 
-        double percentageSum = 0.0;
-        int count = 0;
-
+        double totalTarget = 0.0;
+        double totalAchieved = 0.0;
         for (CategoryProgress p : progressList) {
-            if (p.target > 0) {
-                double categoryPercent = (p.achieved * 100.0) / p.target;
-                percentageSum += categoryPercent;
-                count++;
+            if (p != null && p.target > 0) {
+                totalTarget += p.target;
+                totalAchieved += p.achieved;
             }
         }
 
-        int averagePercentage = (count == 0)
+        int weightedPercentage = (totalTarget <= 0.0)
                 ? 0
-                : (int) Math.round(percentageSum / count);
+                : (int) Math.round((totalAchieved * 100.0) / totalTarget);
 
-        overallProgressText.setText("Success: " + averagePercentage + "%");
+        overallProgressText.setText("Επιτυχία: " + weightedPercentage + "%");
 
-        int color = (averagePercentage >= 95)
+        int color = (weightedPercentage >= 95)
                 ? ContextCompat.getColor(this, R.color.accent_blue)
                 : ContextCompat.getColor(this, R.color.text_primary);
 
@@ -320,9 +315,8 @@ public class MainActivity extends AppCompatActivity {
                 if (totalBonusText != null) {
                     String bonusText = String.format(
                             Locale.getDefault(),
-                            "Bonus: %.2f€",
-                            totalBonus
-                    );
+                            "Μπόνους: %.2f€",
+                            totalBonus);
                     totalBonusText.setText(bonusText);
                 }
             });

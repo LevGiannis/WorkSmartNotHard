@@ -21,4 +21,7 @@ public interface GoalDao {
 
     @Query("SELECT * FROM goals WHERE category = :category AND month = :month AND year = :year LIMIT 1")
     Goal findGoal(String category, int month, int year);
+
+    @Query("DELETE FROM goals WHERE category = :category AND month = :month AND year = :year")
+    void deleteGoal(String category, int month, int year);
 }

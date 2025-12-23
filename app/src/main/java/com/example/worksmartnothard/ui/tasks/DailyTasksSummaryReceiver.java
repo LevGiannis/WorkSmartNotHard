@@ -1,11 +1,13 @@
 package com.example.worksmartnothard.ui.tasks;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
@@ -26,6 +28,13 @@ public class DailyTasksSummaryReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (context
+                    .checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+
         Executors.newSingleThreadExecutor().execute(() -> {
             AppDatabase db = AppDatabase.getDatabase(context.getApplicationContext());
             List<Task> allTasks = db.taskDao().getAllTasks();
@@ -54,9 +63,9 @@ public class DailyTasksSummaryReceiver extends BroadcastReceiver {
             for (int i = 0; i < maxShown; i++) {
                 Task t = pendingTasks.get(i);
                 content.append("• ")
-                        .append(safe(t.name))   // πελάτης
+                        .append(safe(t.name)) // πελάτης
                         .append(" – ")
-                        .append(safe(t.type))   // τύπος (PortIN, Home κτλ)
+                        .append(safe(t.type)) // τύπος (PortIN, Home κτλ)
                         .append("\n");
             }
             if (count > maxShown) {
@@ -73,8 +82,7 @@ public class DailyTasksSummaryReceiver extends BroadcastReceiver {
                     openIntent,
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                             ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                            : PendingIntent.FLAG_UPDATE_CURRENT
-            );
+                            : PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
@@ -94,8 +102,7 @@ public class DailyTasksSummaryReceiver extends BroadcastReceiver {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     "Καθημερινές εκκρεμότητες",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
+                    NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("Καθημερινή σύνοψη με όλες τις ανοιχτές εκκρεμότητες");
 
             NotificationManager manager = context.getSystemService(NotificationManager.class);
