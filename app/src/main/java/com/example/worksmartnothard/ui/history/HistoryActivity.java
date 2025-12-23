@@ -97,7 +97,7 @@ public class HistoryActivity extends AppCompatActivity {
 
                 final String summaryText = String.format(
                         Locale.getDefault(),
-                        "Καταχωρήσεις: %d  • Μπόνους: %.2f€",
+                        "Καταχωρήσεις: %d  • Money: %.2f€",
                         entriesFinal.size(),
                         dailyBonus);
 

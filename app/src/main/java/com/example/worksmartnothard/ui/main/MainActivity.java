@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView taskBadge;
     private TextView overallProgressText;
     private TextView userInfoText;
-    private TextView totalBonusText; // Συνολικό Μπόνους
+    private TextView totalBonusText; // Συνολικό Money
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,14 +270,14 @@ public class MainActivity extends AppCompatActivity {
         picker.show();
     }
 
-    // 🔹 Υπολογισμός ποσοστιαίας συνολικής επιτυχίας
+    // 🔹 Υπολογισμός ποσοστιαίας συνολικής Success
     private void updateOverallProgress(List<CategoryProgress> progressList) {
         if (progressList == null || progressList.isEmpty()) {
-            overallProgressText.setText("Επιτυχία: 0%");
+            overallProgressText.setText("Success: 0%");
             overallProgressText.setTextColor(
                     ContextCompat.getColor(this, R.color.text_primary));
             if (totalBonusText != null) {
-                totalBonusText.setText("Μπόνους: 0,00€");
+                totalBonusText.setText("Money: 0,00€");
             }
             return;
         }
@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 ? 0
                 : (int) Math.round((totalAchieved * 100.0) / totalTarget);
 
-        overallProgressText.setText("Επιτυχία: " + weightedPercentage + "%");
+        overallProgressText.setText("Success: " + weightedPercentage + "%");
 
         int color = (weightedPercentage >= 95)
                 ? ContextCompat.getColor(this, R.color.accent_blue)
@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                 if (totalBonusText != null) {
                     String bonusText = String.format(
                             Locale.getDefault(),
-                            "Μπόνους: %.2f€",
+                            "Money: %.2f€",
                             totalBonus);
                     totalBonusText.setText(bonusText);
                 }

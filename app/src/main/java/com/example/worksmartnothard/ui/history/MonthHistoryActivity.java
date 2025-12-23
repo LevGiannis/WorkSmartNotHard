@@ -103,7 +103,7 @@ public class MonthHistoryActivity extends AppCompatActivity {
             double totalBonus = BonusCalculator.calculateMonthlyBonus(entries);
 
             runOnUiThread(() -> monthBonusText.setText(
-                    String.format(Locale.getDefault(), "Μπόνους: %.2f€", totalBonus)));
+                    String.format(Locale.getDefault(), "Money: %.2f€", totalBonus)));
         }).start();
     }
 
@@ -139,8 +139,8 @@ public class MonthHistoryActivity extends AppCompatActivity {
                             selectedMonth, selectedYear))
                     .append("\n");
             sb.append(String.format(Locale.US,
-                    "Συνολικό Μπόνους Μήνα;%.2f€\n\n", totalBonus));
-            sb.append("Κατηγορία;Στόχος;Επίτευξη;Επιτυχία %;Μπόνους (€)\n");
+                    "Συνολικό Money Μήνα;%.2f€\n\n", totalBonus));
+            sb.append("Κατηγορία;Στόχος;Επίτευξη;Success %;Money (€)\n");
 
             for (CategoryProgress p : currentProgressList) {
                 List<DailyEntry> catEntries = entriesByCategory.getOrDefault(p.category, new ArrayList<>());
@@ -155,7 +155,7 @@ public class MonthHistoryActivity extends AppCompatActivity {
 
             sb.append("\n")
                     .append(String.format(Locale.US,
-                            "ΣΥΝΟΛΙΚΟ ΜΠΟΝΟΥΣ ΜΗΝΑ;;;;%.2f\n", totalBonus));
+                            "ΣΥΝΟΛΙΚΟ MONEY ΜΗΝΑ;;;;%.2f\n", totalBonus));
 
             saveMonthCsvToDownloads(sb.toString());
         }).start();
