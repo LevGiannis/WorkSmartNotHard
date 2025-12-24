@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 
 public class AppPreferences {
 
-    // Stub for accent color selection (returns 0 by default)
+    // Επιστρέφει το index του accent color (0=μωβ, 1=μπλε, 2=μαύρο, 3=γκρι, 4=ροζ)
     public static int getAccentColor(Context context) {
-        return 0;
+        SharedPreferences prefs = getPrefs(context);
+        // Αν δεν έχει οριστεί, default = 3 (γκρι)
+        return prefs.getInt("accent_color_index", 3);
     }
 
     private static final String PREFS_NAME = "worksmart_prefs";

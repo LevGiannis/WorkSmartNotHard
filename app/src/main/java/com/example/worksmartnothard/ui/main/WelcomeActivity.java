@@ -42,10 +42,15 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            // Set theme before super.onCreate
-            int accentIndex = com.example.worksmartnothard.data.AppPreferences.getAccentColor(this);
-            setTheme(getAccentThemeResId(accentIndex));
+        // Set theme before super.onCreate
+        int accentIndex = com.example.worksmartnothard.data.AppPreferences.getAccentColor(this);
+        setTheme(getAccentThemeResId(accentIndex));
         super.onCreate(savedInstanceState);
+
+        // Αφαίρεση ActionBar για να μην εμφανίζεται ο τίτλος
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         // Αν ολοκληρώθηκε το onboarding, πήγαινε Main
         if (AppPreferences.isOnboardingCompleted(this)) {
@@ -118,6 +123,12 @@ public class WelcomeActivity extends AppCompatActivity {
             AppPreferences.setEmail(this, email);
             AppPreferences.setNickname(this, nickname);
             AppPreferences.setStoreCode(this, storeCode);
+
+            // Αν δεν έχει οριστεί accent color, θέσε το σε γκρι (3)
+            android.content.SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+            if (!prefs.contains("accent_color_index")) {
+                prefs.edit().putInt("accent_color_index", 3).apply();
+            }
 
             // Default report email = προσωπικό email (αν δεν υπάρχει ήδη)
             if (TextUtils.isEmpty(AppPreferences.getReportEmail(this))) {

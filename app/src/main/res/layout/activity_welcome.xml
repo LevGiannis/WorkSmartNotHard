@@ -13,15 +13,18 @@
         android:orientation="vertical">
 
         <!-- Τίτλος & υπότιτλος -->
-        <TextView
-            android:id="@+id/textWelcomeTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Καλωσόρισες!"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:paddingBottom="4dp" />
+                <TextView
+                    android:id="@+id/textAppName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:paddingBottom="6dp"
+                    android:gravity="center"
+                    android:textAlignment="center" />
+        <!-- Τίτλος αφαιρείται -->
 
         <TextView
             android:id="@+id/textWelcomeSubtitle"
@@ -30,7 +33,9 @@
             android:text="Συμπλήρωσε τα στοιχεία σου για να ξεκινήσεις."
             android:textSize="14sp"
             android:textColor="@color/text_secondary"
-            android:paddingBottom="18dp" />
+            android:paddingBottom="18dp"
+            android:gravity="center"
+            android:textAlignment="center" />
 
         <!-- ΕΝΟΤΗΤΑ: Στοιχεία χρήστη -->
         <TextView
