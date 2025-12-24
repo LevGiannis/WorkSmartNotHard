@@ -1,9 +1,15 @@
+
 package com.example.worksmartnothard.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 public class AppPreferences {
+
+    // Stub for accent color selection (returns 0 by default)
+    public static int getAccentColor(Context context) {
+        return 0;
+    }
 
     private static final String PREFS_NAME = "worksmart_prefs";
 

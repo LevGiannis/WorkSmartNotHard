@@ -70,9 +70,9 @@ public class AddEntryActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.buttonSave);
 
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                new ArrayList<>());
+            this,
+            android.R.layout.simple_spinner_item,
+            new ArrayList<>());
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(categoryAdapter);
 
@@ -90,11 +90,9 @@ public class AddEntryActivity extends AppCompatActivity {
                 if (db.categoryDao().count() == 0) {
                     String[] defaults = getResources().getStringArray(R.array.categories);
                     for (String name : defaults) {
-                        if (name == null)
-                            continue;
+                        if (name == null) continue;
                         String trimmed = name.trim();
-                        if (trimmed.isEmpty())
-                            continue;
+                        if (trimmed.isEmpty()) continue;
                         db.categoryDao().insertCategory(new Category(trimmed));
                     }
                 }
@@ -105,8 +103,7 @@ public class AddEntryActivity extends AppCompatActivity {
             if (categories == null || categories.isEmpty()) {
                 String[] defaults = getResources().getStringArray(R.array.categories);
                 categories = new ArrayList<>();
-                for (String c : defaults)
-                    categories.add(c);
+                for (String c : defaults) categories.add(c);
             }
 
             List<String> finalCategories = categories;
@@ -129,8 +126,7 @@ public class AddEntryActivity extends AppCompatActivity {
         });
 
         photoPreviewImage.setOnClickListener(v -> {
-            if (selectedPhotoUri == null)
-                return;
+            if (selectedPhotoUri == null) return;
             Intent i = new Intent(this, PhotoViewerActivity.class);
             i.putExtra(PhotoViewerActivity.EXTRA_PHOTO_URI, selectedPhotoUri.toString());
             startActivity(i);
@@ -208,8 +204,9 @@ public class AddEntryActivity extends AppCompatActivity {
                                 orderNumber.isEmpty() ? null : orderNumber,
                                 customerFullName.isEmpty() ? null : customerFullName,
                                 referenceNumber.isEmpty() ? null : referenceNumber,
-                                hasPending,
-                                photoUri));
+                        hasPending,
+                        photoUri
+                        ));
                 runOnUiThread(() -> {
                     Toast.makeText(this, "Η καταχώριση αποθηκεύτηκε!", Toast.LENGTH_SHORT).show();
                     finish();

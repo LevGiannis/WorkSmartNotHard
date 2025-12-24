@@ -1,9 +1,12 @@
+
 package com.example.worksmartnothard.ui.common;
+import android.view.View;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
@@ -67,44 +70,57 @@ public final class PhotoAttachmentHelper {
     public void showChooser(@NonNull Callback callback, boolean allowRemove) {
         this.pendingCallback = callback;
 
-        String[] items;
+        View dialogView = activity.getLayoutInflater().inflate(
+                com.example.worksmartnothard.R.layout.dialog_photo_source, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        dialogView.findViewById(com.example.worksmartnothard.R.id.buttonCamera).setOnClickListener(v -> {
+            dialog.dismiss();
+            Uri cameraUri = createTempImageUri(activity);
+            if (cameraUri == null) {
+                pendingCallback = null;
+                return;
+            }
+            pendingCameraUri = cameraUri;
+            takePictureLauncher.launch(cameraUri);
+        });
+
+        dialogView.findViewById(com.example.worksmartnothard.R.id.buttonGallery).setOnClickListener(v -> {
+            dialog.dismiss();
+            openDocumentLauncher.launch(new String[] { "image/*" });
+        });
+
         if (allowRemove) {
-            items = new String[] { "Από συλλογή", "Κάμερα", "Αφαίρεση" };
-        } else {
-            items = new String[] { "Από συλλογή", "Κάμερα" };
+            // Προσθέτουμε κουμπί "Αφαίρεση" στο κάτω μέρος
+            com.google.android.material.button.MaterialButton removeBtn = new com.google.android.material.button.MaterialButton(activity, null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
+            removeBtn.setText("Αφαίρεση");
+            removeBtn.setIconResource(android.R.drawable.ic_menu_close_clear_cancel);
+            removeBtn.setIconTintResource(com.example.worksmartnothard.R.color.accent_blue_dark);
+            removeBtn.setTextColor(activity.getColor(com.example.worksmartnothard.R.color.accent_blue_dark));
+            removeBtn.setStrokeColorResource(com.example.worksmartnothard.R.color.accent_blue_dark);
+            removeBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+            ((android.widget.LinearLayout) dialogView).addView(removeBtn);
+            removeBtn.setOnClickListener(v -> {
+                dialog.dismiss();
+                if (pendingCallback != null) {
+                    pendingCallback.onPhotoUriChanged(null);
+                }
+                pendingCallback = null;
+                pendingCameraUri = null;
+            });
         }
 
-        new AlertDialog.Builder(activity)
-                .setTitle("Επισύναψη φωτογραφίας")
-                .setItems(items, (d, which) -> {
-                    if (allowRemove && which == 2) {
-                        if (pendingCallback != null) {
-                            pendingCallback.onPhotoUriChanged(null);
-                        }
-                        pendingCallback = null;
-                        pendingCameraUri = null;
-                        return;
-                    }
-
-                    if (which == 0) {
-                        openDocumentLauncher.launch(new String[] { "image/*" });
-                        return;
-                    }
-
-                    // which == 1 => camera
-                    Uri cameraUri = createTempImageUri(activity);
-                    if (cameraUri == null) {
-                        pendingCallback = null;
-                        return;
-                    }
-                    pendingCameraUri = cameraUri;
-                    takePictureLauncher.launch(cameraUri);
-                })
-                .setOnCancelListener(d -> {
-                    pendingCallback = null;
-                    pendingCameraUri = null;
-                })
-                .show();
+        dialog.setOnCancelListener(d -> {
+            pendingCallback = null;
+            pendingCameraUri = null;
+        });
+        dialog.show();
     }
 
     private static void takePersistableReadPermission(Context context, Uri uri) {

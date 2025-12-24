@@ -18,12 +18,33 @@ import com.example.worksmartnothard.R;
 import com.example.worksmartnothard.data.AppPreferences;
 
 public class WelcomeActivity extends AppCompatActivity {
+    private static final String[] ACCENT_THEMES = {
+        "Theme.Wsnh.Purple",
+        "Theme.Wsnh.Blue",
+        "Theme.Wsnh.Black",
+        "Theme.Wsnh.Gray",
+        "Theme.Wsnh.Pink"
+    };
+
+    private int getAccentThemeResId(int accentIndex) {
+        switch (accentIndex) {
+            case 0: return R.style.Theme_Wsnh_Purple;
+            case 1: return R.style.Theme_Wsnh_Blue;
+            case 2: return R.style.Theme_Wsnh_Black;
+            case 3: return R.style.Theme_Wsnh_Gray;
+            case 4: return R.style.Theme_Wsnh_Pink;
+            default: return R.style.Theme_Wsnh_Gray;
+        }
+    }
 
     private EditText etName, etSurname, etEmail, etNickname, etStoreCode;
     private Button btnContinue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+            // Set theme before super.onCreate
+            int accentIndex = com.example.worksmartnothard.data.AppPreferences.getAccentColor(this);
+            setTheme(getAccentThemeResId(accentIndex));
         super.onCreate(savedInstanceState);
 
         // Αν ολοκληρώθηκε το onboarding, πήγαινε Main

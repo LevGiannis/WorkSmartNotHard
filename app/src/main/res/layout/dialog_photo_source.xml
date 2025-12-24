@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonCamera"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:icon="@android:drawable/ic_menu_camera"
+        app:iconPadding="8dp"
+        android:text="Από Κάμερα"
+        android:layout_marginBottom="12dp"
+        app:iconTint="@color/accent_blue" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonGallery"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:icon="@android:drawable/ic_menu_gallery"
+        app:iconPadding="8dp"
+        android:text="Από Συλλογή"
+        app:iconTint="@color/accent_blue" />
+
+</LinearLayout>

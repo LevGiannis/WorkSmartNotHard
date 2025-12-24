@@ -92,8 +92,8 @@ public class TasksActivity extends AppCompatActivity {
         }
 
         pendingEditTaskId = getIntent() != null
-                ? getIntent().getIntExtra(TaskReminderScheduler.EXTRA_TASK_ID, -1)
-                : -1;
+            ? getIntent().getIntExtra(TaskReminderScheduler.EXTRA_TASK_ID, -1)
+            : -1;
 
         loadTasksFromDb();
 
@@ -165,8 +165,7 @@ public class TasksActivity extends AppCompatActivity {
         updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto, photoUriHolder[0]);
         buttonAttachPhoto.setOnClickListener(v -> photoHelper.showChooser(uri -> {
             photoUriHolder[0] = uri == null ? null : uri.toString();
-            updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto,
-                    photoUriHolder[0]);
+            updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto, photoUriHolder[0]);
         }, false));
 
         buttonRemovePhoto.setOnClickListener(v -> {
@@ -175,8 +174,7 @@ public class TasksActivity extends AppCompatActivity {
         });
 
         imagePhotoPreview.setOnClickListener(v -> {
-            if (TextUtils.isEmpty(photoUriHolder[0]))
-                return;
+            if (TextUtils.isEmpty(photoUriHolder[0])) return;
             Intent i = new Intent(this, PhotoViewerActivity.class);
             i.putExtra(PhotoViewerActivity.EXTRA_PHOTO_URI, photoUriHolder[0]);
             startActivity(i);
@@ -316,8 +314,7 @@ public class TasksActivity extends AppCompatActivity {
         updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto, photoUriHolder[0]);
         buttonAttachPhoto.setOnClickListener(v -> photoHelper.showChooser(uri -> {
             photoUriHolder[0] = uri == null ? null : uri.toString();
-            updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto,
-                    photoUriHolder[0]);
+            updatePhotoPreview(textPhotoStatus, imagePhotoPreview, buttonAttachPhoto, buttonRemovePhoto, photoUriHolder[0]);
         }, false));
 
         buttonRemovePhoto.setOnClickListener(v -> {
@@ -326,8 +323,7 @@ public class TasksActivity extends AppCompatActivity {
         });
 
         imagePhotoPreview.setOnClickListener(v -> {
-            if (TextUtils.isEmpty(photoUriHolder[0]))
-                return;
+            if (TextUtils.isEmpty(photoUriHolder[0])) return;
             Intent i = new Intent(this, PhotoViewerActivity.class);
             i.putExtra(PhotoViewerActivity.EXTRA_PHOTO_URI, photoUriHolder[0]);
             startActivity(i);
@@ -552,19 +548,15 @@ public class TasksActivity extends AppCompatActivity {
             status.setText("Καμία φωτογραφία");
             preview.setVisibility(View.GONE);
             preview.setImageDrawable(null);
-            if (attach != null)
-                attach.setText("Επισύναψη φωτογραφίας");
-            if (remove != null)
-                remove.setVisibility(View.GONE);
+            if (attach != null) attach.setText("Επισύναψη φωτογραφίας");
+            if (remove != null) remove.setVisibility(View.GONE);
             return;
         }
 
         status.setText("Φωτογραφία: ΟΚ (πάτησε για προβολή)");
         preview.setVisibility(View.VISIBLE);
-        if (attach != null)
-            attach.setText("Αλλαγή φωτογραφίας");
-        if (remove != null)
-            remove.setVisibility(View.VISIBLE);
+        if (attach != null) attach.setText("Αλλαγή φωτογραφίας");
+        if (remove != null) remove.setVisibility(View.VISIBLE);
         try {
             preview.setImageURI(Uri.parse(photoUri));
         } catch (Exception ignored) {

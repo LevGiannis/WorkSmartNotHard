@@ -194,7 +194,6 @@ public class MonthHistoryActivity extends AppCompatActivity {
         try {
             item = resolver.insert(collection, values);
         } catch (Exception e) {
-            e.printStackTrace();
             runOnUiThread(() -> Toast.makeText(this,
                     "Σφάλμα δημιουργίας αρχείου στις Λήψεις",
                     Toast.LENGTH_SHORT).show());
@@ -215,14 +214,11 @@ public class MonthHistoryActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show());
                 return;
             }
-
-            // BOM UTF-8 για σωστά ελληνικά στο Excel (όπως στο TasksActivity)
+            // BOM UTF-8 για σωστά ελληνικά στο Excel
             out.write(new byte[] { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF });
             out.write(csvContent.getBytes(StandardCharsets.UTF_8));
             out.flush();
-
         } catch (IOException e) {
-            e.printStackTrace();
             runOnUiThread(() -> Toast.makeText(this,
                     "Σφάλμα κατά το export",
                     Toast.LENGTH_SHORT).show());
@@ -235,7 +231,6 @@ public class MonthHistoryActivity extends AppCompatActivity {
             try {
                 resolver.update(item, done, null, null);
             } catch (Exception e) {
-                e.printStackTrace();
                 // Αν κάτι πάει στραβά εδώ, απλά συνεχίζουμε – το αρχείο ήδη υπάρχει
             }
         }
