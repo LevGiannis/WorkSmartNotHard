@@ -333,10 +333,11 @@ public class MainActivity extends AppCompatActivity {
             int year = 2025;
             int month = 11;
             // Αν υπάρχουν ήδη εγγραφές για το μήνα, μην κάνεις τίποτα
-            if (!db.dailyEntryDao().getEntriesForMonth(yearMonth).isEmpty()) return;
+            if (!db.dailyEntryDao().getEntriesForMonth(yearMonth).isEmpty())
+                return;
 
             // Demo κατηγορίες
-            String[] categories = new String[] {"PortIN Mobile", "Vodafone Home W/F", "Ραντεβού", "Exprepay"};
+            String[] categories = new String[] { "PortIN Mobile", "Vodafone Home W/F", "Ραντεβού", "Exprepay" };
             for (String cat : categories) {
                 db.categoryDao().insertCategory(new com.example.worksmartnothard.data.Category(cat));
             }
@@ -348,22 +349,33 @@ public class MainActivity extends AppCompatActivity {
             db.goalDao().insertGoal(new com.example.worksmartnothard.data.Goal("Exprepay", year, month, 30));
 
             // Demo εγγραφές (πωλήσεις)
-            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("PortIN Mobile", "2025-11-03", 3, null, "ORD123", "Γιάννης Παπαδόπουλος", "REF001", false, null));
-            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("PortIN Mobile", "2025-11-10", 2, null, "ORD124", "Μαρία Κωνσταντίνου", "REF002", false, null));
-            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Vodafone Home W/F", "2025-11-05", 1, "VDSL", "ORD200", "Αντώνης Σταμάτης", "REF100", true, null));
-            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Vodafone Home W/F", "2025-11-18", 2, "ADSL 24", "ORD201", "Ελένη Μητροπούλου", "REF101", false, null));
-            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Ραντεβού", "2025-11-07", 500, null, null, "Πελάτης Ραντεβού", null, false, null));
-            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Ραντεβού", "2025-11-20", 700, null, null, "Άλλος Πελάτης", null, false, null));
-            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Exprepay", "2025-11-12", 10, null, null, "Πελάτης Exprepay", null, false, null));
-            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Exprepay", "2025-11-25", 8, null, null, "Άλλος Exprepay", null, false, null));
+            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("PortIN Mobile",
+                    "2025-11-03", 3, null, "ORD123", "Γιάννης Παπαδόπουλος", "REF001", false, null));
+            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("PortIN Mobile",
+                    "2025-11-10", 2, null, "ORD124", "Μαρία Κωνσταντίνου", "REF002", false, null));
+            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Vodafone Home W/F",
+                    "2025-11-05", 1, "VDSL", "ORD200", "Αντώνης Σταμάτης", "REF100", true, null));
+            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Vodafone Home W/F",
+                    "2025-11-18", 2, "ADSL 24", "ORD201", "Ελένη Μητροπούλου", "REF101", false, null));
+            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Ραντεβού",
+                    "2025-11-07", 500, null, null, "Πελάτης Ραντεβού", null, false, null));
+            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Ραντεβού",
+                    "2025-11-20", 700, null, null, "Άλλος Πελάτης", null, false, null));
+            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Exprepay",
+                    "2025-11-12", 10, null, null, "Πελάτης Exprepay", null, false, null));
+            db.dailyEntryDao().insertDailyEntry(new com.example.worksmartnothard.data.DailyEntry("Exprepay",
+                    "2025-11-25", 8, null, null, "Άλλος Exprepay", null, false, null));
 
             // Demo εκκρεμότητες (tasks)
             db.taskDao().insertTask(new com.example.worksmartnothard.data.Task(
-                    "Κώστας Δημητρίου", "6901234567", "123456789", "Ενεργοποίηση SIM", "2025-11-04", "PortIN Mobile", "2025-11-10", null, false));
+                    "Κώστας Δημητρίου", "6901234567", "123456789", "Ενεργοποίηση SIM", "2025-11-04", "PortIN Mobile",
+                    "2025-11-10", null, false));
             db.taskDao().insertTask(new com.example.worksmartnothard.data.Task(
-                    "Σοφία Λάμπρου", "6987654321", "987654321", "Ραντεβού για προσφορά", "2025-11-08", "Ραντεβού", "2025-11-15", null, false));
+                    "Σοφία Λάμπρου", "6987654321", "987654321", "Ραντεβού για προσφορά", "2025-11-08", "Ραντεβού",
+                    "2025-11-15", null, false));
             db.taskDao().insertTask(new com.example.worksmartnothard.data.Task(
-                    "Γιώργος Παπαγεωργίου", "6971122334", "111222333", "Εγκατάσταση VDSL", "2025-11-12", "Vodafone Home W/F", "2025-11-20", null, true));
+                    "Γιώργος Παπαγεωργίου", "6971122334", "111222333", "Εγκατάσταση VDSL", "2025-11-12",
+                    "Vodafone Home W/F", "2025-11-20", null, true));
         }).start();
     }
 }

@@ -19,21 +19,27 @@ import com.example.worksmartnothard.data.AppPreferences;
 
 public class WelcomeActivity extends AppCompatActivity {
     private static final String[] ACCENT_THEMES = {
-        "Theme.Wsnh.Purple",
-        "Theme.Wsnh.Blue",
-        "Theme.Wsnh.Black",
-        "Theme.Wsnh.Gray",
-        "Theme.Wsnh.Pink"
+            "Theme.Wsnh.Purple",
+            "Theme.Wsnh.Blue",
+            "Theme.Wsnh.Black",
+            "Theme.Wsnh.Gray",
+            "Theme.Wsnh.Pink"
     };
 
     private int getAccentThemeResId(int accentIndex) {
         switch (accentIndex) {
-            case 0: return R.style.Theme_Wsnh_Purple;
-            case 1: return R.style.Theme_Wsnh_Blue;
-            case 2: return R.style.Theme_Wsnh_Black;
-            case 3: return R.style.Theme_Wsnh_Gray;
-            case 4: return R.style.Theme_Wsnh_Pink;
-            default: return R.style.Theme_Wsnh_Gray;
+            case 0:
+                return R.style.Theme_Wsnh_Purple;
+            case 1:
+                return R.style.Theme_Wsnh_Blue;
+            case 2:
+                return R.style.Theme_Wsnh_Black;
+            case 3:
+                return R.style.Theme_Wsnh_Gray;
+            case 4:
+                return R.style.Theme_Wsnh_Pink;
+            default:
+                return R.style.Theme_Wsnh_Gray;
         }
     }
 
@@ -62,14 +68,13 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_welcome);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(
                         this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        1001
-                );
+                        new String[] { Manifest.permission.POST_NOTIFICATIONS },
+                        1001);
             }
         }
 
@@ -125,7 +130,8 @@ public class WelcomeActivity extends AppCompatActivity {
             AppPreferences.setStoreCode(this, storeCode);
 
             // Αν δεν έχει οριστεί accent color, θέσε το σε γκρι (3)
-            android.content.SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+            android.content.SharedPreferences prefs = android.preference.PreferenceManager
+                    .getDefaultSharedPreferences(this);
             if (!prefs.contains("accent_color_index")) {
                 prefs.edit().putInt("accent_color_index", 3).apply();
             }

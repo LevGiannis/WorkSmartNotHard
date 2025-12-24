@@ -86,9 +86,8 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
         holder.progressBar.setProgress(percentage);
 
         if (percentage >= 95) {
-                holder.progressBar.setProgressTintList(
-                    ColorStateList.valueOf(ContextCompat.getColor(holder.itemView.getContext(), R.color.accent_blue))
-                );
+            holder.progressBar.setProgressTintList(
+                    ColorStateList.valueOf(ContextCompat.getColor(holder.itemView.getContext(), R.color.accent_blue)));
         } else {
             holder.progressBar.setProgressTintList(null); // default
         }
@@ -119,9 +118,11 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
                 if (db.categoryDao().count() == 0) {
                     String[] defaults = context.getResources().getStringArray(R.array.categories);
                     for (String name : defaults) {
-                        if (name == null) continue;
+                        if (name == null)
+                            continue;
                         String trimmed = name.trim();
-                        if (trimmed.isEmpty()) continue;
+                        if (trimmed.isEmpty())
+                            continue;
                         db.categoryDao().insertCategory(new Category(trimmed));
                     }
                 }
@@ -141,12 +142,14 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
                 Spinner categorySpinner = dialogView.findViewById(R.id.spinnerCategory);
                 EditText targetInput = dialogView.findViewById(R.id.inputTarget);
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, finalCategories);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item,
+                        finalCategories);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 categorySpinner.setAdapter(adapter);
 
                 int idx = finalCategories.indexOf(progress.category);
-                if (idx >= 0) categorySpinner.setSelection(idx);
+                if (idx >= 0)
+                    categorySpinner.setSelection(idx);
 
                 boolean isMoney = "Ραντεβού".equals(progress.category);
                 targetInput.setInputType(isMoney
@@ -163,7 +166,8 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
                             String newCategory = categorySpinner.getSelectedItem().toString();
                             double newTarget;
                             try {
-                                newTarget = Double.parseDouble(targetInput.getText().toString().trim().replace(',', '.'));
+                                newTarget = Double
+                                        .parseDouble(targetInput.getText().toString().trim().replace(',', '.'));
                             } catch (NumberFormatException e) {
                                 Toast.makeText(context, "Μη έγκυρος αριθμός", Toast.LENGTH_SHORT).show();
                                 return;

@@ -1,5 +1,6 @@
 
 package com.example.worksmartnothard.ui.common;
+
 import android.view.View;
 
 import android.app.AlertDialog;
@@ -96,7 +97,8 @@ public final class PhotoAttachmentHelper {
 
         if (allowRemove) {
             // Προσθέτουμε κουμπί "Αφαίρεση" στο κάτω μέρος
-            com.google.android.material.button.MaterialButton removeBtn = new com.google.android.material.button.MaterialButton(activity, null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
+            com.google.android.material.button.MaterialButton removeBtn = new com.google.android.material.button.MaterialButton(
+                    activity, null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
             removeBtn.setText("Αφαίρεση");
             removeBtn.setIconResource(android.R.drawable.ic_menu_close_clear_cancel);
             removeBtn.setIconTintResource(com.example.worksmartnothard.R.color.accent_blue_dark);

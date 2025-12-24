@@ -62,13 +62,16 @@ public class AddGoalActivity extends AppCompatActivity {
     private void seedCategoriesIfNeeded() {
         new Thread(() -> {
             try {
-                if (db.categoryDao().count() > 0) return;
+                if (db.categoryDao().count() > 0)
+                    return;
 
                 String[] defaults = getResources().getStringArray(R.array.categories);
                 for (String name : defaults) {
-                    if (name == null) continue;
+                    if (name == null)
+                        continue;
                     String trimmed = name.trim();
-                    if (trimmed.isEmpty()) continue;
+                    if (trimmed.isEmpty())
+                        continue;
                     db.categoryDao().insertCategory(new Category(trimmed));
                 }
             } catch (Exception ignored) {
@@ -82,22 +85,26 @@ public class AddGoalActivity extends AppCompatActivity {
             if (categories == null || categories.isEmpty()) {
                 String[] defaults = getResources().getStringArray(R.array.categories);
                 categories = new ArrayList<>();
-                for (String c : defaults) categories.add(c);
+                for (String c : defaults)
+                    categories.add(c);
             }
 
             List<Goal> goals = db.goalDao().getGoalsForMonth(year, month);
             HashMap<String, Goal> byCategory = new HashMap<>();
             if (goals != null) {
                 for (Goal g : goals) {
-                    if (g != null && g.category != null) byCategory.put(g.category, g);
+                    if (g != null && g.category != null)
+                        byCategory.put(g.category, g);
                 }
             }
 
             List<GoalCategoryTargetAdapter.Row> rows = new ArrayList<>();
             for (String category : categories) {
-                if (category == null) continue;
+                if (category == null)
+                    continue;
                 String trimmed = category.trim();
-                if (trimmed.isEmpty()) continue;
+                if (trimmed.isEmpty())
+                    continue;
 
                 Goal g = byCategory.get(trimmed);
                 boolean checked = g != null;
@@ -142,7 +149,8 @@ public class AddGoalActivity extends AppCompatActivity {
         List<GoalCategoryTargetAdapter.Row> rows = adapter.getRows();
 
         for (GoalCategoryTargetAdapter.Row row : rows) {
-            if (!row.checked) continue;
+            if (!row.checked)
+                continue;
             String text = row.targetText == null ? "" : row.targetText.trim();
             if (text.isEmpty()) {
                 Toast.makeText(this, "Βάλε στόχο για: " + row.category, Toast.LENGTH_SHORT).show();
@@ -158,7 +166,8 @@ public class AddGoalActivity extends AppCompatActivity {
 
         new Thread(() -> {
             for (GoalCategoryTargetAdapter.Row row : rows) {
-                if (row == null || row.category == null) continue;
+                if (row == null || row.category == null)
+                    continue;
 
                 if (!row.checked) {
                     db.goalDao().deleteGoal(row.category, month, year);
